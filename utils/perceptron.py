@@ -1,5 +1,5 @@
 import numpy as np
-import activation
+from . import activation
 
 # input: x in Rn (n,1)
 # weights : w in Rn (n,1)
@@ -15,7 +15,7 @@ class Perceptron():
         self.n_iter = n_iter
         self.W = np.random.random(input_dim)
         self.b = bias
-        
+
     def weighted_sum(self, X):
         return np.dot(X, self.W) + self.b
 
@@ -35,7 +35,7 @@ class Perceptron():
             return activation.step(z)
 
     def fit(self, X, Y):
-        for _ in self.n_iter:  # epoch loop for statistical learning
+        for _ in range(self.n_iter):  # epoch loop for statistical learning
             for x, y in zip(X, Y):  # loop through each data point
                 yhat = self.predict(x)
                 self.update(y, yhat, x)
