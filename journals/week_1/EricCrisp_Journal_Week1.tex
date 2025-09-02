@@ -1,0 +1,191 @@
+\documentclass[11pt,letterpaper]{article}
+
+% Essential packages
+\usepackage{fontspec}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{datetime}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{verbatim}
+\usepackage{url}
+
+% Page setup
+\geometry{margin=1in}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+% Header and footer setup
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Data Science Capstone Journal}
+\rhead{\today}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Code listing setup
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    breaklines=true,
+    captionpos=b,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red}
+}
+
+% Custom commands
+\newcommand{\journalentry}[2]{
+    \section*{Journal Entry - #1}
+    \addcontentsline{toc}{section}{Journal Entry - #1}
+    \textbf{Date:} #2 \\
+    \textbf{Duration:} 6 hours \\
+    \rule{\textwidth}{0.5pt}
+}
+
+\newcommand{\objective}[1]{
+    \subsection*{Objective}
+    #1
+}
+
+\newcommand{\activities}[1]{
+    \subsection*{Activities Completed}
+    #1
+}
+
+\newcommand{\findings}[1]{
+    \subsection*{Key Findings}
+    #1
+}
+
+\newcommand{\challenges}[1]{
+    \subsection*{Challenges Encountered}
+    #1
+}
+
+\newcommand{\nextSteps}[1]{
+    \subsection*{Next Steps}
+    #1
+}
+
+\newcommand{\reflections}[1]{
+    \subsection*{Reflections}
+    #1
+}
+
+% Title page setup
+\newcommand{\workingtitle}{Hybrid Symbolic-Generative AI Physics-Informed Neural Networks for Generating First-Principle Physics-Based Simulations}
+\title{\Large \textbf{DATS 598: Data Science Capstone} \\ 
+       \large Journal Entries and Progress Documentation \\
+       \vspace{0.5cm}
+       \normalsize \textbf{\workingtitle}}
+\author{Eric Crisp \\ 
+        University of Pennsylvania \\
+        \texttt{ecrisp@upenn.edu}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ========================================
+% SAMPLE JOURNAL ENTRY
+% ========================================
+
+\journalentry{Week 1}{\today}
+
+\objective{
+To begin the planning and synthesizing part of the project including literature review, data location, and beginning to define scope.}
+
+\activities{
+\begin{itemize}
+    \item Conducted initial literature review on state of physics-informed neural networks
+    \item Began populating database for retrevial of thermodynamic training data using CoolProp/NIST
+    \item Set up repositiory, python environment, and docker in case deploying
+    \item Developed fundamental tools and data structures and began validating against open source utilities
+\end{itemize}
+}
+
+\findings{
+We want to be able to predict the state of a fluid (i.e., water) when undergoing physical processes like expansion, contraction, and hopefully phase change. To do so, gathering either formula or dataset of points is required. This is tabulated to a SQLite database using grid population from CoolProp.
+}
+
+\challenges{
+\begin{itemize}
+    \item Understanding the technical feasibility of the process
+    \item Ensuring the current literature review does not already contain results regarding this process
+    \item Understanding and determining data storage, access, and compute limitations
+\end{itemize}
+}
+
+\nextSteps{
+\begin{enumerate}
+    \item Finish literature review and summarize
+    \item Leverage open source but understand where limitations are likely to occur
+    \item Develop timeline and process chart for ensuring progress and hitting milestones
+\end{enumerate}
+}
+
+\reflections{
+While this project is intentionally open ended, define clarity on the goal. We aim to achieve the following:
+\begin{enumerate}
+    \item Can a neural network architecture, when combined and trained with first-principle physics, develop physically valid equations?
+    \item Leveraging LLM, can the physically valid equations be converted into syntactically and mathematically correct code?
+    \item Can the process take timeseries data (i.e., sensor data) and derive a simple model (simulation) that captures the neccesary physics?
+\end{enumerate}
+}
+
+\newpage
+
+% ========================================
+% APPENDICES (if needed)
+% ========================================
+
+% symbols for directory modeling: ├  └  │  ─  ┬  ┼  ═
+\newpage
+\appendix
+\section{Code Repository Structure}
+\begin{verbatim}
+pinn_dats598/
+├── .gitignore
+├── documents/
+├── journals/
+├── lectures/
+├── refs/
+├── results/
+├── notebooks/
+├── src/
+│   ├── __init__.py
+│   ├── activation.py
+│   ├── neural_network.py
+│   ├── opensource.py
+│   └── perceptron.py
+├── tests/
+│   ├── __init__.py
+│   └── test_perceptron.py
+├── data/
+└── docs/
+\end{verbatim}
+
+\end{document}

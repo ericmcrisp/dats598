@@ -1,0 +1,51 @@
+%!TEX program = xelatex
+\documentclass{article}
+
+\usepackage{fontspec}   % Only works with XeLaTeX or LuaLaTeX
+
+% Choose a font that has box-drawing characters (e.g., "DejaVu Sans Mono")
+\setmonofont{DejaVu Sans Mono}
+
+\usepackage{xcolor}
+\usepackage{listings}
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    breaklines=true,
+    captionpos=b,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red}
+}
+
+\begin{document}
+
+\section{Code Repository Structure}
+
+\begin{verbatim}
+pinn_dats598/
+├── .gitignore
+├── documents/
+├── journals/
+├── lectures/
+├── refs/
+├── results/
+├── notebooks/
+├── src/
+│   ├── __init__.py
+│   ├── activation.py
+│   ├── neural_network.py
+│   ├── opensource.py
+│   └── perceptron.py
+├── tests/
+│   ├── __init__.py
+│   └── test_perceptron.py
+├── data/
+└── docs/
+\end{verbatim}
+
+\end{document}
