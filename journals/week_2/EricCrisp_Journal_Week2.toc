@@ -1,0 +1,3 @@
+\contentsline {section}{Journal Entry - Week 2 - Main Proposal}{2}{section*.2}%
+\contentsline {section}{Journal Entry - Week 2 - Secondary Proposal}{4}{section*.7}%
+\contentsline {section}{\numberline {A}Systems of Equations for PINN Implementation}{6}{appendix.A}%
