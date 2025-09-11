@@ -25,6 +25,7 @@
 \usepackage{xcolor}
 \usepackage{verbatim}
 \usepackage{url}
+\usepackage{svg}
 
 % Page setup
 \geometry{margin=1in}
@@ -223,15 +224,27 @@ Tech Stack & Python, FastAPI, PyTorch, Pandas & Python, JavaScript (Node, React)
 \newpage
 \appendix
 \section{Systems of Equations for PINN Implementation}
-\subsection*{A. Simple Case: Fluid Flow with Chemical Reactions}
+\subsection*{A. Simple Case: Mass Spring Damper System}
 
-Generically, this should include an incompressible flow drived by a pressure gradient. The chemical reaction should add stiffness to the system as the fluid flow gradient scale is orders of magnitude larger than the gradient of the chemical reaction timescale.
+Generically, this is a well understood system and includes the states and learned parameters.
 
-\begin{align}
-f_1(x, y) &= 0 \\
-f_2(x, y) &= 0
-\end{align}
+\begin{equation}
+\begin{aligned}
+x_1 &= x(t), \quad x_2 = \dot{x}(t) \\
+\dot{x}_1 &= x_2 \\
+\dot{x}_2 &= \frac{1}{m} \left( -c x_2 - k x_1 + F(t) \right)
+\end{aligned}
+\end{equation}
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.25\textwidth]{../../documents/images/mass-spring-damper-system.png}
+  \caption{Simple Mass-Spring-Damper System}
+  \label{fig:mass-spring-damper-diagram}
+\end{figure}
+
+This sets the parameters to be estimated as \\
+$$\theta = \{ m, c, k \}$$ 
 
 \subsection*{B. Complex Case: Liquid Rocket Engine Systeme Model}
 
@@ -243,5 +256,12 @@ PCA and other dimensional reduction methods can, and should be, used to determin
 f_1(x, y) &= 0 \\
 f_2(x, y) &= 0
 \end{align}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\textwidth]{../../documents/images/SSME_engine_schematic}
+  \caption{Space Shuttle Main Engine (RS-25) Engine Diagram}
+  \label{fig:SSME_engine_diagram}
+\end{figure}
 
 \end{document}

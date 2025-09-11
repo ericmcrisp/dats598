@@ -1,0 +1,348 @@
+\documentclass[11pt,letterpaper]{article}
+
+% Essential packages
+\usepackage{fontspec}
+% \usepackage[utf8]{inputenc}
+% \usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{datetime}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{verbatim}
+\usepackage{url}
+\usepackage{svg}
+
+% Page setup
+\geometry{margin=1in}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+% Header and footer setup
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Data Science Capstone: Project Proposal}
+\rhead{\today}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Code listing setup
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    breaklines=true,
+    captionpos=b,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red}
+}
+
+% Custom commands
+\newcommand{\heading}[1]{
+    \section*{\workingtitle}
+    \addcontentsline{toc}{section}{\workingtitle}
+    \textbf{Date:} #1 \\
+    \rule{\textwidth}{0.5pt}
+}
+
+\newcommand{\motivation}[1]{
+    \subsection*{Motivation and Significance}
+    \addcontentsline{toc}{subsection}{Motivation and Significance}
+    #1
+}
+
+\newcommand{\plan}[1]{
+    \subsection*{Project Plan and Timeline}
+    \addcontentsline{toc}{subsection}{Timeline and Milestone}
+    #1
+}
+
+\newcommand{\data}[1]{
+    \subsection*{Data Sources}
+    \addcontentsline{toc}{subsection}{Data and Resources}
+    #1
+}
+
+\newcommand{\mentor}[5]{
+    \subsection*{Mentor Credentials}
+    \addcontentsline{toc}{subsection}{Mentor Credentials}
+    \begin{itemize}
+        \item \textbf{Name:} #1
+        \item \textbf{Email:} #2
+        \item \textbf{Phone Number:} #3
+        \item \textbf{Relevant Skills and Experience:} #4
+        \item \textbf{LinkedIn:} #5
+    \end{itemize}
+}
+
+% Title page setup
+\newcommand{\workingtitle}{A Statistical Truth Detection System}
+\title{\Large \textbf{DATS 598: Data Science Capstone} \\ 
+       \large Project Proposal \\
+       \vspace{0.5cm}
+       \normalsize \textbf{\workingtitle}}
+\author{Eric Crisp \\ 
+        University of Pennsylvania \\
+        \texttt{ecrisp@upenn.edu}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ========================================
+% SAMPLE JOURNAL ENTRY -- MAIN PROPOSAL
+% ========================================
+
+\heading{\today}
+
+
+\motivation{
+
+This will be an end-to-end implementation of a fact-checking NLP application. The premise behind this project is to develop a process that can be used to determine how likely a statement contains the truth. This is motivated by the common incorrect responses, or general mistrust, in LLM outputs. While this tool is not designed to extend to all modes of truth detection such as mathematics, the extension would track similarly. At the end of the project, the goal is to have a simple web app that allows the user to select one of several LLM API's, write a prompt and query the LLM, have the output be fed into the application and be used as input to the truth detection process. Ideally, the output would be some notion of confidence such as a percentage (with, or without a confidence interval) rather than a binary "true" or "false". The result should be a degree of confidence given to the LLM generated text by a third party (the external application) on the LLM generated output.
+
+}
+
+\plan{
+
+As mentioned above, this project is motivated by the general mistrust in LLM outputs for simple things such as the AI-assisted results when Googling something like "Did we land on the moon?". LLMs include things like RLHF, Constitutional AI, and being trained on so many perspectives and opinions that inherent bias is reduced. This application is not intended to be in replacement for any training process. Where possible, this process is an attempt at illustrating how factual various LLM responses can be over a relatively narrow scope, or dataset.
+
+The process should behave similar to a normal LLM query. For example, the user would prompt the application with something like "There are many movies that made \$1T in revenue." Clearly, this is wrong. This prompt would be analyzed with various NLP processes using open source libraries to understand the point of the question at hand. The prompt would simultaneously be fed to an LLM of that the user selected and the output is then processed by the fact-checking application. Things like sentence embedding, similarity classification, entity recognition, and fact extraction. Using trained models such as BERT that have been fine tuned with FEVER dataset could be used in conjunction for truth-detection. After NLP processing of both the query and the LLM generated response, a degree of confidence would be calculated on the LLM output. As the final result, the LLM output would be returned along with some quantification of the likelihood the response is true. If the LLM returns "Yes, several movies have earned \$1T in revenue" the coupled truth-detection result should be nearly 0\%.
+
+For determining "truth", fine tuning larger models on specifically the FEVER, Factuality, or Wikidata datasets is likely one avenue for gaining confidence in the LLM response. However, there are other methods that could be implemented such as hypothesis testing, or even RAG methods. Libraries for many of these processes exist including HuggingFace, scikit-learn, Haystack, and LangChain, among many other open source resources.
+
+There are several obstacles involved with this process. Some of which are merely learning as my current exposure to NLP, fine tuning large models, and building web apps is limited, however, this pipeline and technical scope seems doable. The timeline and milestones are described below. I aim to gain experience creating an end-to-end solution that leverages open source libraries while creating tools and supporting functionality where necessary. I anticipate problems mostly in the fact finding portion of this project. Determining what part of the prompt is the "fact" that should be checked for truth can be confusing and ambiguous.
+
+The approach to generating the truth detection system is as follows:
+
+
+\begin{enumerate}[label=\textbf{Week \arabic*:}]
+    \item \textbf{Setup \& Data Pipeline}
+    \begin{itemize}[label=$\bullet$]
+        \item Set up development environment with Python, virtual environment, and dependencies
+        \item Download and explore FEVER, Factily, Wikidata dataset(s)
+        \item Build data preprocessing pipeline
+        \item Create basic data visualization and statistics
+        \item \textbf{Deliverables:}
+            \begin{itemize}[label=$\square$]
+                \item Working Python environment
+                \item FEVER dataset loaded and preprocessed
+                \item Basic statistics dashboard showing dataset distribution
+                \item Data cleaning and preparation functions
+            \end{itemize}
+    \end{itemize}
+        
+
+    \item \textbf{Create Initial Model}
+    \begin{itemize}[label=$\bullet$]
+        \item Implement sentence embedding baseline using SentenceTransformers
+        \item Build similarity-based classification
+        \item Integrate Wikipedia API for evidence retrieval
+        \item Create model evaluation framework
+        \item \textbf{Deliverables:}
+        \begin{itemize}[label=$\square$]
+            \item Baseline fact-checker achieving on FEVER validation set
+            \item Wikipedia API integration for real-time evidence retrieval
+            \item Evaluation metrics (accuracy, F1, precision/recall)
+            \item Create evidence ranking and filtering system
+        \end{itemize}
+    \end{itemize}
+
+
+    \item \textbf{LLM Integration \& NLP on Query}
+    \begin{itemize}[label=$\bullet$]
+        \item Integrate OpenAI API for AI responses
+        \item Build claim extraction system using NLP techniques via open source libraries (from scratch as needed)
+        \item Implement factual claim detection and entity extraction
+        \item Create end-to-end pipeline: Query $\rightarrow$ LLM output $\rightarrow$ Claims $\rightarrow$ Truth Detection
+        \item \textbf{Deliverables:}
+        \begin{itemize}[label=$\square$]
+            \item AI query handling process (limited token on input and output)
+            \item  Extract claim and facts from query
+            \item Named entity recognition for people, places, dates, numbers via NLP processes
+            \item Working pipeline prototype
+        \end{itemize}
+    \end{itemize}
+
+    \item \textbf{Advanced Verification Model}
+    \begin{itemize}[label=$\bullet$]
+        \item Incorporate BERT/RoBERTa-based fact verification model via fine tuning on FEVER, or other dataset (Wikidata)
+        \item Wrap up the statistical truth detection process (confidence internals, hypothesis testing, A/B testing, weighted averages of results, etc.)
+        \item \textbf{Deliverables:}
+        \begin{itemize}[label=$\square$]
+            \item Fine-tuned transformer model for fact verification
+            \item Confidence scoring system with multiple methods
+            \item Performance benchmarking against FEVER leaderboard
+        \end{itemize}
+    \end{itemize}
+
+    \item \textbf{Begin Web App Framework}
+    \begin{itemize}[label=$\bullet$]
+        \item Build web application interface
+        \item Create user input methods and result displays
+        \item Add basic error handling and user feedback
+        \item \textbf{Deliverables:}
+        \begin{itemize}[label=$\square$]
+            \item Functional web interface for asking questions
+            \item Basic responsive design
+        \end{itemize}
+    \end{itemize}
+
+    \item \textbf{Continued Web App Development}
+    \begin{itemize}[label=$\bullet$]
+        \item Add result visualization (hooks for statistical result and LLM output)
+        \item Implement claim highlighting, or a summary of what was determined to be the "fact"
+        \item Create evidence source display with links
+        \item Build confidence visualization (score, coloring from red to yellow to green depending on percentage true)
+        \item \textbf{Deliverables:}
+        \begin{itemize}[label=$\square$]
+            \item Annotation of LLM output
+            \item Truth detection output
+        \end{itemize}
+    \end{itemize}    
+
+    \item \textbf{Begin Backend Development}
+    \begin{itemize}[label=$\bullet$]
+        \item Convert core functionality to FastAPI backend
+        \item Implement REST API endpoints
+        \item Add request/response validation
+        \item Build async processing for better performance (similar to 550 web app)
+        \item \textbf{Deliverables:}
+        \begin{itemize}[label=$\square$]
+            \item FastAPI backend with documented endpoints
+            \item Async pipeline verification
+            \item API rate limiting and authentication (OpenAI, Wikidata, etc.)
+        \end{itemize}
+    \end{itemize} 
+
+    \item \textbf{Database Integration}
+    \begin{itemize}[label=$\bullet$]
+        \item Use FEVER or another ground truth dataset in an SQLite or PostgreSQL database (or Amazon RDS)
+        \item Implement SQLite/PostgreSQL for storing results
+        \item Add user-based functionality (login, result storage, etc.)
+        \item \textbf{Deliverables:}
+        \begin{itemize}[label=$\square$]
+            \item Database schema for FEVER access (if needed)
+            \item Query history and user data
+        \end{itemize}
+    \end{itemize} 
+
+    \item \textbf{Multi-Source Integration}
+    \begin{itemize}[label=$\bullet$]
+        \item Integrate multiple free sources (e.g., Wikidata, government APIs)
+        \item Explore integrating Retrieval-Augmented Generation (RAG) for real-time or recent facts (e.g., "The S\&P fell 3 points today")
+        \item \textbf{Deliverables:}
+        \begin{itemize}[label=$\square$]
+            \item Source credibility database and scoring algorithm
+            \item Integration with Wikidata for structured facts
+            \item Multi-source evidence aggregation
+            \item Time-sensitive claim handling
+        \end{itemize}
+    \end{itemize}
+
+    \item \textbf{Deployment \& Monitoring}
+    \begin{itemize}[label=$\bullet$]
+    \item Deploy/host web app to cloud platform
+    \item \textbf{Deliverables:}
+        \begin{itemize}[label=$\square$]
+            \item Push production deployment
+        \end{itemize}
+    \end{itemize}
+
+    \item \textbf{Finishing Touches, Document, and Present}
+    \begin{itemize}[label=$\bullet$]
+        \item Final UI/UX improvements
+        \item Create (or clean up) documentation
+        \item \textbf{Deliverables:}
+        \begin{itemize}[label=$\square$]
+            \item Complete user documentation and help system
+            \item Presentation of process, results, and tooling
+        \end{itemize} 
+    \end{itemize} 
+
+\end{enumerate}
+
+\vspace{1em}
+\textbf{\large Technical Stack}
+
+\begin{itemize}
+    \item \textbf{Backend:}
+    \begin{itemize}
+        \item Python
+        \item Either Flask or FastAPI for API endpoints
+        \item SQLite/PostgreSQL for data storage
+    \end{itemize}
+    \item \textbf{Machine Learning:}
+    \begin{itemize}
+        \item HuggingFace Transformers, PyTorch, scikit-learn
+    \end{itemize}
+    \item \textbf{Frontend:}
+    \begin{itemize}
+        \item HTML/CSS/JavaScript
+        \item Plotly for visualizations
+    \end{itemize}
+    \item \textbf{External APIs:}
+    \begin{itemize}
+        \item OpenAI, Wikipedia, Google Fact Check API
+    \end{itemize}
+    \item \textbf{Deployment:}
+    \begin{itemize}
+        \item Docker containers
+        \item GitHub for CI/CD
+    \end{itemize}
+\end{itemize}
+}
+
+\data{
+
+All data being used is open source. FEVER, Factily, Wikidata, and any other data sources are (currently) being considered as "true" - verified and trusted sources.
+
+\begin{itemize}
+
+  \item \textbf{FEVER} – A large-scale dataset for fact-checking based on Wikipedia. \\
+  \href{https://fever.ai}{https://fever.ai}
+
+  \item \textbf{Factify} – A dataset and benchmark for factuality detection. \\
+  \href{https://github.com/surya1701/Factify-2.0}{https://github.com/surya1701/Factify-2.0}
+
+  \item \textbf{Wikidata} – A collaboratively edited knowledge base from the Wikimedia Foundation. \\
+  \href{https://www.wikidata.org}{https://www.wikidata.org}
+
+  \item \textbf{BERT} – A language model developed by Google AI. \\
+  \href{https://arxiv.org/abs/1810.04805}{https://arxiv.org/abs/1810.04805}
+
+  \item \textbf{T5} – A unified framework that casts all NLP tasks as text generation problems. \\
+  \href{https://arxiv.org/abs/1910.10683}{https://arxiv.org/abs/1910.10683}
+
+\end{itemize}
+
+
+}
+
+\mentor
+  {Jelle Vanhorenbeke}
+  {jellevh@seas.upenn.edu}
+  {(XXX) XXX-XXXX}
+  {Anthropic, Member of the Technical Staff - Software Engineer in Research (several years of experience in development)}
+  {https://www.linkedin.com/in/jellevanhorenbeke/}
+
+\end{document}
