@@ -1,0 +1,41 @@
+name: initial ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:20.10.16
+        options: --privileged
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: docker build
+        uses: docker/setup-buildx-action@v2
+
+      - name: docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: build backend
+        run: docker build -t backend ./backend
+
+      - name: run backend tests
+        run: |
+          docker run backend pytest
+
+      - name: build frontend image
+        run: docker build -t frontend ./frontend
