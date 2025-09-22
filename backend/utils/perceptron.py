@@ -9,7 +9,8 @@ from . import activation
 
 class Perceptron():
 
-    def __init__(self, eta=0.01, n_iter=1000, input_dim=None, activation="sigmoid", bias=0):
+    def __init__(self, eta=0.01, n_iter=1000, input_dim=None,
+                 activation="sigmoid", bias=0):
         self.activation = activation.lower()
         self.eta = eta
         self.n_iter = n_iter
