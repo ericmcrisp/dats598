@@ -9,4 +9,6 @@ seaborn
 torch
 pandas
 transformers
+jupyter
+openie
 
