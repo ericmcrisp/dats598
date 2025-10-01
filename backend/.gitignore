@@ -1,0 +1,53 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Environment files
+.env
+.venv/
+venv/
+ENV/
+env/
+*.env
+
+# Conda environment directories (if you created the env in the project folder)
+.conda/
+conda-meta/
+*.conda
+
+# Conda environment file (you do want to track .yml, so don't ignore it)
+# environment.yml → DO NOT ignore if you want to share it
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Pytest / coverage
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+nosetests.xml
+coverage.xml
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+*.manifest
+*.spec
+
+# Logs and system files
+*.log
+*.DS_Store
+Thumbs.db
+
+# IDE and editor configs
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
