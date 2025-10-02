@@ -1,13 +1,13 @@
 # Fdb version 4
-["xdvipdfmx"] 1757524097.87104 "EricCrisp_Journal_Week2.xdv" "EricCrisp_Journal_Week2.pdf" "EricCrisp_Journal_Week2" 1757524099.08272 0
-  "EricCrisp_Journal_Week2.xdv" 1757524097.72925 20496 7338c57aada7329e46e288ebf2270f2f "xelatex"
+["xdvipdfmx"] 0 "EricCrisp_Journal_Week3.xdv" "EricCrisp_Journal_Week3.pdf" "EricCrisp_Journal_Week3" 0 -1
+  "EricCrisp_Journal_Week3.xdv" 1759347249.63781 19036 0b4b5530b08b12f47effbd831194af92 "xelatex"
   (generated)
-  "EricCrisp_Journal_Week2.pdf"
+  "EricCrisp_Journal_Week3.pdf"
   (rewritten before read)
-["xelatex"] 1757524096.51245 "/Users/admin/Documents/graduate/penn/courses/dats598/journals/week_2/EricCrisp_Journal_Week2.tex" "EricCrisp_Journal_Week2.xdv" "EricCrisp_Journal_Week2" 1757524099.07949 0
-  "../../documents/images/SSME_engine_schematic.png" 1757523391.9505 267821 c320fa96ebb44d3ffa7835fb2aba9aa1 ""
-  "../../documents/images/mass-spring-damper-system.png" 1757523716.35631 32221 2f8685a55d165f9d4e910bc2df00c39e ""
-  "/Users/admin/Documents/graduate/penn/courses/dats598/journals/week_2/EricCrisp_Journal_Week2.tex" 1757524096.25478 11392 4c6c292e5cf832dd8c5d94b9bbec3144 ""
+["xelatex"] 1759347248.55955 "/Users/admin/Documents/graduate/penn/courses/dats598/documents/journals/week_3_TODO/EricCrisp_Journal_Week3.tex" "EricCrisp_Journal_Week3.xdv" "EricCrisp_Journal_Week3" 1759347249.76252 2
+  "../../documents/images/mass-spring-damper-system.png" 0 -1 0 ""
+  "../../images/SSME_engine_schematic.png" 1757523391.9505 267821 c320fa96ebb44d3ffa7835fb2aba9aa1 ""
+  "/Users/admin/Documents/graduate/penn/courses/dats598/documents/journals/week_3_TODO/EricCrisp_Journal_Week3.tex" 1759347224.91867 11382 6c754a004522e1b1fdd4172474cca5ed ""
   "/usr/local/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -158,14 +158,14 @@
   "/usr/local/texlive/2024/texmf-dist/web2c/texmf.cnf" 1727217670 42021 a58d36c7ede3d2fc9f93da62d691ddff ""
   "/usr/local/texlive/2024/texmf-var/web2c/xetex/xelatex.fmt" 1736185086 5883722 2cd2b542864c1704a837f37698c44e1f ""
   "/usr/local/texlive/2024/texmf.cnf" 1710266656 577 e590dabc9e28c5b61546e15f63eebcdf ""
-  "EricCrisp_Journal_Week2.aux" 1757524097.72772 1362 7d8482d9993c7913c4aec131047e0f3a "xelatex"
-  "EricCrisp_Journal_Week2.out" 1757524097.72873 814 4fd4c052ccac804abcb0d8f06031936a "xelatex"
-  "EricCrisp_Journal_Week2.tex" 1757524096.25478 11392 4c6c292e5cf832dd8c5d94b9bbec3144 ""
-  "EricCrisp_Journal_Week2.toc" 1757524097.72914 266 8e2757c78380dd93fe0db9356127408b "xelatex"
+  "EricCrisp_Journal_Week3.aux" 1759347249.63627 1362 7d8482d9993c7913c4aec131047e0f3a "xelatex"
+  "EricCrisp_Journal_Week3.out" 1759347249.63726 814 4fd4c052ccac804abcb0d8f06031936a "xelatex"
+  "EricCrisp_Journal_Week3.tex" 1759347224.91867 11382 6c754a004522e1b1fdd4172474cca5ed ""
+  "EricCrisp_Journal_Week3.toc" 1759347249.63774 266 8e2757c78380dd93fe0db9356127408b "xelatex"
   (generated)
-  "EricCrisp_Journal_Week2.aux"
-  "EricCrisp_Journal_Week2.log"
-  "EricCrisp_Journal_Week2.out"
-  "EricCrisp_Journal_Week2.toc"
-  "EricCrisp_Journal_Week2.xdv"
+  "EricCrisp_Journal_Week3.aux"
+  "EricCrisp_Journal_Week3.log"
+  "EricCrisp_Journal_Week3.out"
+  "EricCrisp_Journal_Week3.toc"
+  "EricCrisp_Journal_Week3.xdv"
   (rewritten before read)

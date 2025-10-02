@@ -1,14 +1,9 @@
 fastapi
 uvicorn
 pydantic
+pydantic-settings
+spacy
+textblob
 
-numpy
-scipy
-matplotlib
-seaborn
-torch
-pandas
-transformers
-jupyter
-openie
+
 

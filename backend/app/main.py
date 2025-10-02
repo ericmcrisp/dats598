@@ -1,10 +1,20 @@
 # imports
 from fastapi import FastAPI
-from config import settings
-from api.health import router as health_router
-from api.prompt import router as prompt_router
+from fastapi.middleware.cors import CORSMiddleware
+from app.config import settings
+from app.api.health import router as health_router
+from app.api.prompt import router as prompt_router
 
 app = FastAPI()
+# because Vite and backend on different ports
+app.add_middleware(
+    CORSMiddleware,
+    # might need to change this for prod
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/")

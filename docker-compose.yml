@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   backend:
     build: ./backend
@@ -7,14 +5,16 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      - ./backend:/app 
+    environment:
+      - PYTHONPATH=/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
   frontend:
     build: ./frontend
     container_name: frontend
     ports:
-      - "5173:5173"  # Vite default port
+      - "5173:5173" # Vite default
     volumes:
       - ./frontend:/app
       - /app/node_modules

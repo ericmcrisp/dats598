@@ -13,6 +13,7 @@ venv/
 ENV/
 env/
 *.env
+.env.*
 
 # Conda environment directories (if you created the env in the project folder)
 .conda/
