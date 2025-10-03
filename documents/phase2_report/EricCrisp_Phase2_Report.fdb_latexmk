@@ -1,11 +1,11 @@
 # Fdb version 4
-["xdvipdfmx"] 1757604325.47118 "EricCrisp_ProjectProposal.xdv" "EricCrisp_ProjectProposal.pdf" "EricCrisp_ProjectProposal" 1757604326.25292 0
-  "EricCrisp_ProjectProposal.xdv" 1757604325.32676 114076 73f8e6ac9bb6e23cb8264b7160cd560b "xelatex"
+["xdvipdfmx"] 1759434966.88841 "EricCrisp_Phase2_Report.xdv" "EricCrisp_Phase2_Report.pdf" "EricCrisp_Phase2_Report" 1759434969.37081 0
+  "EricCrisp_Phase2_Report.xdv" 1759434966.71609 48124 e7d2b67ce0eb23bb31aac2b93e213a36 "xelatex"
   (generated)
-  "EricCrisp_ProjectProposal.pdf"
+  "EricCrisp_Phase2_Report.pdf"
   (rewritten before read)
-["xelatex"] 1757604323.65043 "/Users/admin/Documents/graduate/penn/courses/dats598/documents/proposal/EricCrisp_ProjectProposal.tex" "EricCrisp_ProjectProposal.xdv" "EricCrisp_ProjectProposal" 1757604326.24971 0
-  "/Users/admin/Documents/graduate/penn/courses/dats598/documents/proposal/EricCrisp_ProjectProposal.tex" 1757604323.31119 15301 5aea612334d95c8861633e8dbb84f6e4 ""
+["xelatex"] 1759434963.59616 "/Users/admin/Documents/graduate/penn/courses/dats598/documents/phase2_report/EricCrisp_Phase2_Report.tex" "EricCrisp_Phase2_Report.xdv" "EricCrisp_Phase2_Report" 1759434969.36645 0
+  "/Users/admin/Documents/graduate/penn/courses/dats598/documents/phase2_report/EricCrisp_Phase2_Report.tex" 1759434963.09402 8607 5214afe8d64ea5a73cbd49217e31ad56 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -137,14 +137,14 @@
   "/usr/local/texlive/2024/texmf-dist/web2c/texmf.cnf" 1727217670 42021 a58d36c7ede3d2fc9f93da62d691ddff ""
   "/usr/local/texlive/2024/texmf-var/web2c/xetex/xelatex.fmt" 1736185086 5883722 2cd2b542864c1704a837f37698c44e1f ""
   "/usr/local/texlive/2024/texmf.cnf" 1710266656 577 e590dabc9e28c5b61546e15f63eebcdf ""
-  "EricCrisp_ProjectProposal.aux" 1757604325.32501 731 577bcb2ced3b438894e5d9b4445d83c2 "xelatex"
-  "EricCrisp_ProjectProposal.out" 1757604325.32618 898 d019c77cdfef9f1f353e6948bf1c95b2 "xelatex"
-  "EricCrisp_ProjectProposal.tex" 1757604323.31119 15301 5aea612334d95c8861633e8dbb84f6e4 ""
-  "EricCrisp_ProjectProposal.toc" 1757604325.32667 343 b1825c28f3044cf4297b1dde2078861b "xelatex"
+  "EricCrisp_Phase2_Report.aux" 1759434966.7092 703 446f4ea2e246fabb7c239a3b71f8e0d7 "xelatex"
+  "EricCrisp_Phase2_Report.out" 1759434966.71251 761 82747dd30090c95f477855503122a34b "xelatex"
+  "EricCrisp_Phase2_Report.tex" 1759434963.09402 8607 5214afe8d64ea5a73cbd49217e31ad56 ""
+  "EricCrisp_Phase2_Report.toc" 1759434966.71597 315 85a3ac5703e54ce844e8f156ea35fecc "xelatex"
   (generated)
-  "EricCrisp_ProjectProposal.aux"
-  "EricCrisp_ProjectProposal.log"
-  "EricCrisp_ProjectProposal.out"
-  "EricCrisp_ProjectProposal.toc"
-  "EricCrisp_ProjectProposal.xdv"
+  "EricCrisp_Phase2_Report.aux"
+  "EricCrisp_Phase2_Report.log"
+  "EricCrisp_Phase2_Report.out"
+  "EricCrisp_Phase2_Report.toc"
+  "EricCrisp_Phase2_Report.xdv"
   (rewritten before read)

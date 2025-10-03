@@ -1,0 +1,159 @@
+\documentclass[11pt,letterpaper]{article}
+
+% Essential packages
+\usepackage{fontspec}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{datetime}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{verbatim}
+\usepackage{url}
+\usepackage{svg}
+
+% Page setup
+\geometry{margin=1in}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+% Header and footer setup
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Data Science Capstone Journal}
+\rhead{\today}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Code listing setup
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    breaklines=true,
+    captionpos=b,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red}
+}
+
+% Custom commands
+\newcommand{\journalentry}[2]{
+    \section*{Journal Entry - #1}
+    \addcontentsline{toc}{section}{Journal Entry - #1}
+    \textbf{Date:} #2 \\
+    \textbf{Duration:} 10 hours \\
+    \rule{\textwidth}{0.5pt}
+}
+
+\newcommand{\objective}[1]{
+    \subsection*{Objective}
+    #1
+}
+
+\newcommand{\activities}[1]{
+    \subsection*{Activities Completed}
+    #1
+}
+
+\newcommand{\findings}[1]{
+    \subsection*{Key Findings}
+    #1
+}
+
+\newcommand{\challenges}[1]{
+    \subsection*{Challenges Encountered}
+    #1
+}
+
+\newcommand{\nextSteps}[1]{
+    \subsection*{Next Steps}
+    #1
+}
+
+\newcommand{\reflections}[1]{
+    \subsection*{Reflections}
+    #1
+}
+
+% Title page setup
+\newcommand{\workingtitle}{Statistical Truth Detection System}
+\title{\Large \textbf{DATS 598: Data Science Capstone} \\ 
+       \large Journal Entries and Progress Documentation \\
+       \vspace{0.5cm}
+       \normalsize \textbf{\workingtitle}}
+\author{Eric Crisp \\ 
+        University of Pennsylvania \\
+        \texttt{ecrisp@upenn.edu}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ========================================
+% SAMPLE JOURNAL ENTRY -- MAIN PROPOSAL
+% ========================================
+
+\journalentry{Week 4 - \workingtitle}{\today}
+
+\objective{
+Complete initial data investigation, prototyping of architecture and product format, begin implementation.}
+
+\activities{
+\begin{itemize}
+    \item Continued deep dive into the NLP processes needed, finding open source libraries where applicable, and determine the neccesary, nice to haves for project deliverables.
+    \item 
+\end{itemize}
+
+}
+
+\findings{
+
+
+
+}
+
+\nextSteps{
+
+    \begin{itemize}
+        \item Pull in data sources for fact-checking (e.g., FEVER, HuggingFace, Wikidata, etc.).
+        
+        \item Begin building out the backend applications via notebook (sentence parsing and analysis, API hooks, open source and python compability and configurations for environment stability).
+        
+        \item Begin prototyping the web app and setting up the tech stack (confirmation of CI/CD pipelines, containerized code, frontend-backend communication).
+        
+    \end{itemize}
+
+    The current tech stack (as planned, and currently built is this):
+    \begin{itemize}
+        \item Backend: Python, FastAPI, Uvicorn
+        \item Frontend: JavaScript, React, Vite
+        \item VCS/Deployment: Git, GitHub Actions for CI/CD, AWS for hosting (?)
+        \item Database: PostgreSQL, if RAG (?)
+        \item NLP: SpaCy, NLTK, HuggingFace Transformers
+        \item Containerization: Docker (Docker compose)
+        \item EDA Packages: Jupyter Notebooks, Pandas, Matplotlib, Seaborn, NLTK, SpaCy, Transformers, Torch
+    \end{itemize}
+}
+
+\end{document}
