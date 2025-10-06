@@ -1,11 +1,11 @@
 # Fdb version 4
-["xdvipdfmx"] 1759427609.13079 "EricCrisp_Journal_Week3.xdv" "EricCrisp_Journal_Week3.pdf" "EricCrisp_Journal_Week3" 1759427610.55393 0
-  "EricCrisp_Journal_Week3.xdv" 1759427608.95442 7164 53c58c759231753cc0760227ca810669 "xelatex"
+["xdvipdfmx"] 1759678571.89065 "EricCrisp_Journal_Week3.xdv" "EricCrisp_Journal_Week3.pdf" "EricCrisp_Journal_Week3" 1759678575.2843 0
+  "EricCrisp_Journal_Week3.xdv" 1759678571.23983 10960 7c6643aa95a1d14bb557c0b2241efc24 "xelatex"
   (generated)
   "EricCrisp_Journal_Week3.pdf"
   (rewritten before read)
-["xelatex"] 1759427606.25393 "/Users/admin/Documents/graduate/penn/courses/dats598/documents/journals/week_3_TODO/EricCrisp_Journal_Week3.tex" "EricCrisp_Journal_Week3.xdv" "EricCrisp_Journal_Week3" 1759427610.54968 0
-  "/Users/admin/Documents/graduate/penn/courses/dats598/documents/journals/week_3_TODO/EricCrisp_Journal_Week3.tex" 1759427605.77043 4603 6387f2c2521b24e104f9f2133820fb99 ""
+["xelatex"] 1759678565.06072 "/Users/admin/Documents/graduate/penn/courses/dats598/documents/journals/week_3/EricCrisp_Journal_Week3.tex" "EricCrisp_Journal_Week3.xdv" "EricCrisp_Journal_Week3" 1759678575.2763 0
+  "/Users/admin/Documents/graduate/penn/courses/dats598/documents/journals/week_3/EricCrisp_Journal_Week3.tex" 1759678564.05251 7233 0451bce5c22619e503b1fca8f8ad7dd5 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -148,10 +148,10 @@
   "/usr/local/texlive/2024/texmf-dist/web2c/texmf.cnf" 1727217670 42021 a58d36c7ede3d2fc9f93da62d691ddff ""
   "/usr/local/texlive/2024/texmf-var/web2c/xetex/xelatex.fmt" 1736185086 5883722 2cd2b542864c1704a837f37698c44e1f ""
   "/usr/local/texlive/2024/texmf.cnf" 1710266656 577 e590dabc9e28c5b61546e15f63eebcdf ""
-  "EricCrisp_Journal_Week3.aux" 1759427608.94948 325 4298d1a48a9f1c8e229a4b97d40949aa "xelatex"
-  "EricCrisp_Journal_Week3.out" 1759427608.95366 366 5690ff839d15c23f6333f9cc1422b50a "xelatex"
-  "EricCrisp_Journal_Week3.tex" 1759427605.77043 4603 6387f2c2521b24e104f9f2133820fb99 ""
-  "EricCrisp_Journal_Week3.toc" 1759427608.95423 101 1a2f453625957ccb8bf7efd45e0a5d5a "xelatex"
+  "EricCrisp_Journal_Week3.aux" 1759678571.2354 325 4298d1a48a9f1c8e229a4b97d40949aa "xelatex"
+  "EricCrisp_Journal_Week3.out" 1759678571.23742 366 5690ff839d15c23f6333f9cc1422b50a "xelatex"
+  "EricCrisp_Journal_Week3.tex" 1759678564.05251 7233 0451bce5c22619e503b1fca8f8ad7dd5 ""
+  "EricCrisp_Journal_Week3.toc" 1759678571.23958 101 1a2f453625957ccb8bf7efd45e0a5d5a "xelatex"
   (generated)
   "EricCrisp_Journal_Week3.aux"
   "EricCrisp_Journal_Week3.log"

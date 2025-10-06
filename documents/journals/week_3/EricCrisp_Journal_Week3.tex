@@ -59,7 +59,7 @@
     \section*{Journal Entry - #1}
     \addcontentsline{toc}{section}{Journal Entry - #1}
     \textbf{Date:} #2 \\
-    \textbf{Duration:} 10 hours \\
+    % \textbf{Duration:} 10 hours \\
     \rule{\textwidth}{0.5pt}
 }
 
@@ -117,13 +117,24 @@
 \journalentry{Week 3 - \workingtitle}{\today}
 
 \objective{
-Synthesyze the literature review and understand a path forward for the truth detection project. Also summarize current project standing.}
+Synthesize the literature review and understand a path forward for the truth detection project. Also summarize current project standing.
+
+To respond to the questions in the Week 3 Journal assignment:
+
+\begin{itemize}
+    \item I messaged my mentor, but did not have a full meeting. The takeaways were about web crawling techniques. 
+    \item I mostly did literature review this week and finding open source libraries to leverage.
+    \item My action items are to get the full infrastructure in place and begin working with the initial datasets, as well as produce initial NLP preprocessing steps.
+\end{itemize}
+
+My refelction will be regarded as the findings from the liteature review below.
+}
 
 \activities{
 \begin{itemize}
     \item Project architecture setup (web app, tech stack, etc.). 
     \item Literature review.
-    \item Initial deep dive into the NLP processes needed, finding open source libraries where applicable, and determine the neccesary, nice to haves for project deliverables.
+    \item Initial deep dive into the NLP processes needed, finding open source libraries where applicable, and determine the necessary, nice to haves for project deliverables.
 \end{itemize}
 
 }
@@ -131,17 +142,26 @@ Synthesyze the literature review and understand a path forward for the truth det
 \findings{
 The literature review consisted of reading papers, open source documentation, and interacting with existing tools. The concept of fact-checking is not novel. It has been around since 2018, which coincides with the popularity rise of "fake news" and misinformation on social media platforms. As such, many fact-checking methods relate to political contexts, Wikipedia, and other trusted data sources. The following papers were most informative:
 \begin{enumerate}
-    \item Remaining Product Life
-    \item Likelihood of Catostrophic Failure 
-    \item Predictions of Unmeasured Data
+    \item Truth is Universal: Robust Detection of Lies in LLMs
+    \item A Survey on Automated Fact-Checking
+    \item FactCheck Editor: Multilingual Text Editor with End-to-End fact-checking
+    \item ClaimBuster: The First-ever End-to-end Fact-checking System
+    \item Building a Better Lie Detector with BERT: The Difference Between Truth and Lies
+    \item Automated Fact Checking: Task formulations, methods and future directions
+    \item Towards automated check-worthy sentence detection using Gated Recurrent Unit
 \end{enumerate}
 
+The take away from these papers is the concept of fact-checking is not novel. There are many experimental ways to determine the factual validity of a statement. Additionally, there are many ways to approach this problem. Depending on the context there are a few steps needed in preprocessing. For a given document, there are many steps before even getting to the "search" part of the problem. This includes determining the type of a sentence, whether a sentence contains fact-check worthy comments, parsing the facts (and relevant information) into a queryable format, fine tuning LLMS (i.e. BERT) for prompt generation and detection, and implementing RAG to determine truthfulness from both trusted and known-untrustworthy sources, as well as documenting what references support (or refute) what claims. 
+
+An interesting side note is the application to international and multilingual fact-checking. The LLMs are likely trained on English and US datasets rather than internationally based datasets which implies finding truth in other languages may be more difficult. Determining sentence structure, tone, inference in other languages could potentially overcomplicate this project. For the time being, this will be limited to a US/English only scope. 
+
+As well as taking in text for the analysis of factual statements, audio recordings could be used as input with a text to speech model in the front layer. Even videos with the ability to translate speech to text. Theoretically, if real time responsee was not a limitation, this could be done in real time and give the accuracy of various political speeches, debates, and other contexts where validity is crucial.
 }
 
 \nextSteps{
     \begin{itemize}
         \item Pull in data sources for fact-checking (e.g., FEVER, HuggingFace, Wikidata, etc.).
-        \item Begin building out the backend applications via notebook (sentence parsing and analysis, API hooks, open source and python compability and configurations for environment stability).
+        \item Begin building out the backend applications via notebook (sentence parsing and analysis, API hooks, open source and python compatibility and configurations for environment stability).
         \item Begin prototyping the web app and setting up the tech stack (confirmation of CI/CD pipelines, containerized code, frontend-backend communication).
     \end{itemize}
 
