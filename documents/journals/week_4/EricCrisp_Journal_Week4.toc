@@ -1,1 +1,1 @@
-\contentsline {section}{Journal Entry - Week 4 - Statistical Truth Detection System}{2}{section*.2}%
+\contentsline {section}{Journal Entry - Week 4}{2}{section*.2}%
