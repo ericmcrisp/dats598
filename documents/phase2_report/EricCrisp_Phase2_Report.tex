@@ -35,7 +35,7 @@
 % Header and footer setup
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{Data Science Capstone: Project Proposal}
+\lhead{Data Science Capstone: Project Outline}
 \rhead{\today}
 \cfoot{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
@@ -128,7 +128,7 @@
 % Title page setup
 \newcommand{\workingtitle}{A Statistical Truth Detection System}
 \title{\Large \textbf{DATS 598: Data Science Capstone} \\ 
-       \large Project Proposal \\
+       \large Project Outline \\
        \vspace{0.5cm}
        \normalsize \textbf{\workingtitle}}
 \author{Eric Crisp \\ 
@@ -155,10 +155,9 @@
 
 \problemDefBackground{
 
-Reiterate and expand on the problem definition.
-Provide background information and context.
+This project is about taking input and determining if the statements within are true or false. Applications of this work include a variety of situations such as real-time news verification during debates, reports, or other media outlets, in researching the methods for retrieving evidence and verifying truth via RAG, embeddings, or other techniques, and finally the influence of truth in LLMs including response generation with and without truth verification.
 
-
+The general result at the end of the day is a backend Python script that processes input and determines the truthfulness of the statements (and inferences) within. The backend will be wrapped around a simple web app for demonstration purposes, however, the main focus is the backend processing and truth verification. The application will be reflect a simple text prompt and will result in an analyzed output depending on the input and user configuration. 
 }
 
 % =========================================
@@ -279,8 +278,84 @@ Provide a rough timeline and list the updated project components.
 Include soft deadlines for each significant phase.
 
 
+\begin{enumerate}[label=\textbf{Week \arabic*:}]
+    \setcounter{enumi}{3}
+
+    \item \textbf{Create Initial Backend Model}
+        \begin{itemize}[label=$\bullet$]
+            \item Implement sentence embedding baseline using SentenceTransformers
+            \item Build similarity-based classification
+            \item Integrate Wikipedia API for evidence retrieval
+            \item Create model evaluation framework
+            \item \textbf{Deliverables:}
+            \begin{itemize}[label=$\square$]
+                \item Baseline fact-checker achieving on FEVER validation set
+                \item Wikipedia API integration for real-time evidence retrieval
+                \item Evaluation metrics (accuracy, F1, precision/recall)
+                \item Create evidence ranking and filtering system
+            \end{itemize}
+        \end{itemize}
+
+    \item \textbf{Build API Endpoints}
+        \begin{itemize}
+            \item Build hooks for external API calls in backend
+            \item Create skeleton UX/UI features for displaying backend results
+            \item \textbf{Deliverables:}
+            \begin{itemize}
+                \item Skeleton app and API endpoints in place.
+            \end{itemize}
+        \end{itemize}
+
+    \item \textbf{Develop Backend Model Further}
+        \begin{itemize}
+            \item Implement advanced models (e.g., T5, BERT) via fine tuning on relevant datasets
+            \item Experiment with RAG techniques for evidence retrieval (Pinecone)
+        \end{itemize}
+
+    \item \textbf{Determine and Test Performance Metrics}
+        \begin{itemize}
+            \item Sentence classification performance (F1).
+            \item Document embedding and retrieval performance (MTEB)
+            \item Truth detection performance (accuracy, precision/recall).
+        \end{itemize}
+
+    \item \textbf{Iterate on Backend Model}
+        \begin{itemize}
+            \item Implement sentence embedding baseline using SentenceTransformers
+            \item Build similarity-based classification
+            \item Integrate Wikipedia API for evidence retrieval
+            \item Create model evaluation framework
+        \end{itemize}
+
+    \item \textbf{Create User Database}
+        \begin{itemize}
+            \item Implement a PostgreSQL database for user management (AWS RDS).
+            \item Record user inputs and results for future analysis.
+        \end{itemize}
+
+    \item \textbf{Full Implementation and Testing of App}
+        \begin{itemize}
+            \item Finish API hooks and UX/UI features.
+            \item Conduct end-to-end testing of the application.
+            \item Create backlog of features to fix and improve.
+        \end{itemize}
+
+    \item \textbf{Conduct Initial "Search" Testing}
+        \begin{itemize}
+            \item Test output with and without truth detection to determine influence on LLM.
+        \end{itemize}
+
+    \item \textbf{Documentation and Final Report}
+        \begin{itemize}
+            \item Gather user documentation and create final report.
+            \item Prepare presentation materials.
+            \item Update Github README and documentation for public release.
+        \end{itemize}
+
+
+\end{enumerate}
+
+
 }
-
-
 
 \end{document}
