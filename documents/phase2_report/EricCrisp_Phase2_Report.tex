@@ -153,11 +153,14 @@
 % summarize the project here !! 
 % =========================================
 
+
+Video Demo Link: \href{https://drive.google.com/file/d/11X8pEq5-CRvjXEWEQRKflpQ_7snq_LGp/view?usp=sharing}{click here.}
+
 \problemDefBackground{
 
 This project is about taking input and determining if the statements within are true or false. Applications of this work include a variety of situations such as real-time news verification during debates, reports, or other media outlets, in researching the methods for retrieving evidence and verifying truth via RAG, embeddings, or other techniques, and finally the influence of truth in LLMs including response generation with and without truth verification.
 
-The general result at the end of the day is a backend Python script that processes input and determines the truthfulness of the statements (and inferences) within. The backend will be wrapped around a simple web app for demonstration purposes, however, the main focus is the backend processing and truth verification. The application will be reflect a simple text prompt and will result in an analyzed output depending on the input and user configuration. 
+The general result at the end of the day is a backend Python script that processes input and determines the truthfulness of the statements (and inferences) within. The backend will be wrapped around a simple web app for demonstration purposes, however, the main focus is the backend processing and truth verification. The application will be reflect a simple text prompt and will result in an analyzed output depending on the input and user configuration.
 }
 
 % =========================================
@@ -166,9 +169,24 @@ The general result at the end of the day is a backend Python script that process
 
 \litReview{ 
 
-Summarize 4 to 5 research papers related to your problem, detailing approaches and outcomes.
-How do these findings inform your project?
 
+Much of the literature relates to the process of handling sentence detection and evidence retrieval. White papers, or survey papers, on the field of automated fact-checking consist of generally three categories: preprocessing, ranking and evidence retrieval, and multi-classification, or a degree of truthfulness. Preprocessing typically consists of two methods, a subject-predicate-object (SPO) triplet extraction, or a sentence classification and embedding approach. Ranking and evidence retrieval typically consists of a similarity-based approach, a more advanced RAG technique, or perhaps more traditionally knowledge graph path traversal ranking. Document retrieval is one of the more challenging parts because of the potentially ambiguous nature of the input. NLP techniques require being able to consistently decipher named entities and context understanding just to correctly identify the implied, or explicitly stated claim. 
+
+The most useful outcome from the literature review is two fold: understanding the processes and challenges involved with preprocessing as that appears to be the most consistent hurdle, and consistent reliable databases to pull from rather than requiring a web crawler. Datasets such as FEVER, Wikidata, Claimbuster, ClueWeb, Factify are all open source, available databases that can be incorporated into the project for evidence retrieval and truth verification. The creativity comes with how to use the results of retrieval. Some models have done binary classification, others have implemented biased algorithms based on the origination source, others have created knowledge graphs for path traversal and ranking to determine the likelihood of truthfulness. The approach taken here is still up for debate, but will be informed by the literature review and experimentation.
+
+Models used in the literature include ML algorithms in conjunction with NLP techniques such as SVM, KNN, random forest, gradient boosting, and Naive Bayes. Other references have fine tuned LLMs on FEVER and other datasets, such as BERT, neural networks (FNN, RNN, and GRU). This project will likely include a handful of these models throughout the process specialized for each subset process which follows the general architectures in the literature.
+
+The following references were used. Full citation of the papers will be implemented in upcoming journals to be incorporated in future documentation formally. 
+
+\begin{enumerate}
+    \item Truth is Universal: Robust Detection of Lies in LLMs
+    \item A Survey on Automated Fact-Checking
+    \item FactCheck Editor: Multilingual Text Editor with End-to-End fact-checking
+    \item ClaimBuster: The First-ever End-to-end Fact-checking System
+    \item Building a Better Lie Detector with BERT: The Difference Between Truth and Lies
+    \item Automated Fact Checking: Task formulations, methods and future directions
+    \item Towards automated check-worthy sentence detection using Gated Recurrent Unit
+\end{enumerate}
 
 }
 
@@ -177,47 +195,72 @@ How do these findings inform your project?
 % =========================================
 % overall project methodlology goes here !! 
 % =========================================
-Overview of Approach: 
-Explain the overall approach, including key steps and goals. Are you using an experimental, theoretical, or data-driven approach? Describe why you chose this approach.
-Models and Algorithms: 
-Briefly describe the specific models and algorithms you plan to use
-Describe why these models are suitable for your problem and how they align with your project's objectives.
-This subsection can brief, you will provide further detail in the next section
-Tools and Software:
-List the software, programming languages, or frameworks you intend to use (e.g., Python, R, TensorFlow, PyTorch, etc.).
-Describe why these tools are appropriate and any benefits they offer to your project.
-Implementation Strategy:
-Outline how you plan to implement the models and algorithms. Will you be coding from scratch, or using existing libraries and resources?
-Include information on data preprocessing, feature engineering, model training, validation, and testing.
-Evaluation Metrics:
-Describe how you will evaluate the success of your models. Discuss metrics such as accuracy, precision, recall, F1-score, etc.
-Provide justification for your chosen metrics and their relevance to the problem at hand.
+
+The approach to this project will be a combination to an experimental and data-driven approach. The fundamental goal is to create a system that can take input, convert it to text, detect the claims to fact check, retrieve evidence, and determine the truthfulness. Reporting the evidence as well as the statistical likelihood based on the sources, the similarity and overlap, are the estimated confidence level in the classification of true, or not true. The data-driven component will come when these features developed are turned on and off, embeddings for evidence retrieval, RAG techniques, and LLM fine tuning methods are implemented to see their effect and influence on the correctness of the output.
 
 }
 {
 % =========================================
 % what models and algos using here !! 
 % =========================================
-some stuff
+
+The project will consist of many ML and NLP algorithms throughout, some of which are not entirely obvious yet. Loosely, the preprocessing step will include a heavy amount of regexp, text manipulation and normalization such that statements can be classified. This can be as complex as using neural networks as done in the literature, or as simple as SVM, which also does pretty well. SVM will likely be used initially. After text classification and preprocessing, forming search content for information retrieval will include formatting triplets via NLTK tagging and SentenceTransformer parsing to break down statements into queryable formats. These queries will be used to search the databases for similarity matches, and if possible, contradiction matches via logical analysis of the context and text. This part of the project is slightly ambiguous still but is being fine tuned currently. After information retrieval, the evidence is classified via random forest, gradient boosting, or simple Naive Bayes, to determine the credibility of the N nearest documents. This is what generally informs the statistical outcome of the results. Further into the project the order of operations could change. Leveraging fine tuned language models like BERT, the truth detection could be incorporated into the LLM output. The accuracy of this model can be compared via the process described above and iterated until either the correct evidence is found (for training). This can be compared analytically to the output when prompted by one of the AI models (Claude, GPT, Gemini) with and without search being active.
+
 }
 {
 % =========================================
 % describe the tech stack details here !! 
 % =========================================
-some stuff
+
+\begin{itemize}
+    \item Backend: Python, FastAPI, Uvicorn
+    \begin{itemize}
+        \item Python and FastAPI for common backend setup that easily configures with open source libraries
+    \end{itemize}
+    \item Frontend: JavaScript, React, Vite
+    \begin{itemize}
+        \item JS, React/Vite for common frontend setup that has significant documentation (this is a new skill/toolkit)
+    \end{itemize}
+    \item VCS/Deployment: Git, GitHub Actions for CI/CD, AWS
+    \begin{itemize}
+        \item Git is universal and CI/CD necessary for ensuring app continuity
+    \end{itemize}
+    \item Database: PostgreSQL, Pinecone
+    \begin{itemize}
+        \item RDBMS systems from 550 work, but unsure whether MongoDB, or something RAG suitable like the common Pinecone vector database is the right choice. For now, working with the basic PostgreSQL for User storage and leveraging Pinecone for initial RAG implementation.
+    \end{itemize}
+    \item NLP: SpaCy, NLTK, HuggingFace Transformers
+    \begin{itemize}
+        \item Literature uses these libraries which drives a lot of the configuration and environment setup.
+    \end{itemize}
+    \item Containerization: Docker (Docker compose)
+    \begin{itemize}
+        \item Likely overkill for this project, but wanted experience incorporating Docker compose for frontend, backend server hosting locally for testing as well as containerization for hosting a live website that can scale with AWS
+    \end{itemize}
+    \item EDA Packages: Jupyter Notebooks, Pandas, Matplotlib, Seaborn, NLTK, SpaCy, Transformers, Torch
+    \begin{itemize}
+        \item Similar response to the NLP libraries. These will produce the trained models and processes that will be exported to the backend to be used as inference models rather than have these bulky libraries hosted and running real time.
+    \end{itemize}
+\end{itemize}
+
 }
 {
 % =========================================
 % implementation details here !! 
 % =========================================
-some stuff
+
+Implementation has been parallelized as much as possible to ensure a minimum viable product is always as close to being delivered as possible. The backend will rely heavily on open source libraries as that is most of the industry standard (based on the literature). Where relevant and logical, supporting functions will of course be written. The frontend is a simple implementation with much of the development being a learning process, building off the content from 550. A notebook is used to build out the backend preprocessing that is then moved into OOP based structure for the main functionality. Sentence analysis, classification, and all other NLP tasks are built out with test cases and tested against the common dataset from literature (LWIC, FEVER, etc.)
 }
 {
 
 % =========================================
 % how to evaluate this here !! 
 % =========================================
-some stuff
+
+This project will rely heavily on mostly the classic NLP metrics: accuracy, precision, recall and F1. These metrics are critical because different error types have different implications such as high precision ensures that when the system flags misinformation, it is likely correct, maintaining credibility, however, with high recall the system catches most false claims, fulfilling its core mission. But the balance between these two is imperative so F1 is necessary to capture the overall state.
+
+When incorporating RAG, there is another metric that is likely a balance between precision for determining the correct, or relevant documents (precision@k in the literature) and the overall correct evidence within the passage which relates more closely to the F1-score mentioned earlier. 
+
 }
 
 
@@ -239,6 +282,8 @@ All data being used is open source. FEVER, Factily, Wikidata, and any other data
   \item \textbf{Wikidata} – A collaboratively edited knowledge base from the Wikimedia Foundation. \\
   \href{https://www.wikidata.org}{https://www.wikidata.org}
 
+  \item \textbf{ClaimBuster} – A dataset for factual text claims. \href{10.5281/zenodo.3836810}{10.5281/zenodo.3836810} \\
+  
   \item \textbf{BERT} – A language model developed by Google AI. \\
   \href{https://arxiv.org/abs/1810.04805}{https://arxiv.org/abs/1810.04805}
 
@@ -252,31 +297,21 @@ All data being used is open source. FEVER, Factily, Wikidata, and any other data
 % where and what models are being used !! 
 % =========================================
 
-Identify and describe the datasets and models being considered.
-Description of Datasets:
-Provide an overview of the datasets you plan to use, including the source, size, structure, and format.
-Discuss any preprocessing steps required to clean or transform the data, such as normalization, handling missing values, or encoding categorical variables.
-Data Collection:
-Describe how you will collect or source your datasets. Will you use public datasets, scrape data from websites, or collect it manually?
-Highlight any ethical or legal considerations for data collection, especially if it involves sensitive or personal information.
-Data Splitting and Training:
-Explain how you will split the data into training, validation, and test sets. Justify the proportions and rationale behind this choice.
-Describe any additional data augmentation or resampling techniques you plan to use.
-Model Selection and Justification:
-Detail the models or algorithms you will apply to the data, and explain why you chose them over other options. Mention any hyperparameters or specific settings you plan to explore for each model.
-Potential Challenges and Mitigation:
-Identify any potential challenges or risks associated with the datasets and models, such as class imbalance, overfitting, or underfitting.
-Discuss how you plan to mitigate these risks and ensure robust, reliable results.
+The size of the datasets used vary. FEVER is about 125K rows of classified textual claims from Wikipedia. ClaimBuster contains approximately 32K rows of facts taken from debates that have been manually checked. Much of the preprocessing stage has been vetted due to literature overlap with the common datasets, however, that process is currently being implemented for this project. The datasets being used will be split for dev/train/test with cross fold due to the relatively limited data available, or more datasets from the literature will be pulled in as needed. The FEVER dataset will follow the subject-object-predicate triple format as mentioned earlier, however, that is not entirely uniform with other datasets, so considerations will need to be made for that going forward.
+
+There are no ethical, or legal, considerations for the data collections methods. There is certainly the factor of bias inclusion given these datasets are majority restricted to English and US scopes, however, that is known. Future work related to this should extrapolate beyond that limitation.
+
+Data augmentation is likely not necessary for this project. If more data is needed, pulling transcripts from audio files could inflate the pure text limitation, however, synthetic factual data is likely beyond the scope of the NLP limitations.
+
+At this point, the hyper-parameters needed to be tuned are unknown. When considering fine tuning BERT for later implementation that will be a learning process that I have not entirely scoped out, however, for learning random forest, SVM, Naive Bayes, or other simpler ML classifiers the parameters will be learned via iteration or grid search for optimization.
+
+Potential problems I foresee are related to scoring and evaluation. Overfitting is less of a risk here as the number of features is quite limited, as well as the available data. Under-fitting with unintentional biases is much more likely. This is mitigated by tracking performance metrics, but also correctly applying the folding methods for for dev/test/train data splits. When considering the performance metrics on the NLP results, determining the accuracy of the fact (true, not true) may be valid in an absolute sense, however, if the evidence used is incorrect that implies a false positive. Classifying and rectifying these failures will prove to be nuanced and likely the biggest hurdle within this project. Mitigation is likely going to include significant development in the preprocessing stage and text analysis prior to the information retrieval stage.
 
 
 
 }
 
-\plan{ 
-
-Provide a rough timeline and list the updated project components.
-Include soft deadlines for each significant phase.
-
+\plan{
 
 \begin{enumerate}[label=\textbf{Week \arabic*:}]
     \setcounter{enumi}{3}
@@ -359,3 +394,4 @@ Include soft deadlines for each significant phase.
 }
 
 \end{document}
+
