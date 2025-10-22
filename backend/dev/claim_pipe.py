@@ -8,6 +8,7 @@ from text_preprocessing import TextPreprocessor
 
 import pandas as pd
 
+
 class ClaimDetectionPipeline:
     def __init__(self):
         self.preprocessor = TextPreprocessor()
