@@ -1,0 +1,164 @@
+\documentclass[11pt,letterpaper]{article}
+
+% Essential packages
+\usepackage{fontspec}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{datetime}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{verbatim}
+\usepackage{url}
+\usepackage{svg}
+
+% Page setup
+\geometry{margin=1in}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+% Header and footer setup
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Data Science Capstone Journal}
+\rhead{\today}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Code listing setup
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    breaklines=true,
+    captionpos=b,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red}
+}
+
+% Custom commands
+\newcommand{\journalentry}[2]{
+    \section*{Journal Entry - #1}
+    \addcontentsline{toc}{section}{Journal Entry - #1}
+    \textbf{Date:} #2 \\
+    % \textbf{Duration:} 10 hours \\
+    \rule{\textwidth}{0.5pt}
+}
+
+\newcommand{\objective}[1]{
+    \subsection*{Objective}
+    #1
+}
+
+\newcommand{\activities}[1]{
+    \subsection*{Activities Completed}
+    #1
+}
+
+\newcommand{\findings}[1]{
+    \subsection*{Key Findings}
+    #1
+}
+
+\newcommand{\challenges}[1]{
+    \subsection*{Challenges Encountered}
+    #1
+}
+
+\newcommand{\nextSteps}[1]{
+    \subsection*{Next Steps}
+    #1
+}
+
+\newcommand{\reflections}[1]{
+    \subsection*{Reflections}
+    #1
+}
+
+% Title page setup
+\newcommand{\workingtitle}{Statistical Truth Detection System}
+\title{\Large \textbf{DATS 598: Data Science Capstone} \\ 
+       \large Journal Entries and Progress Documentation \\
+       \vspace{0.5cm}
+       \normalsize \textbf{\workingtitle}}
+\author{Eric Crisp \\ 
+        University of Pennsylvania \\
+        \texttt{ecrisp@upenn.edu}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ========================================
+% SAMPLE JOURNAL ENTRY -- MAIN PROPOSAL
+% ========================================
+
+\journalentry{Week 4}{\today}
+
+\objective{
+Synthesize the literature review and understand a path forward for the truth detection project. Also summarize current project standing.
+
+To respond to the questions in the Week 4 Journal assignment:
+
+\begin{itemize}
+    \item I did have a full meeting. The takeaways were about about implementing an analytical component to this project such as the influence of search on LLM output, like looping on fact generation until accurate as opposed to giving first response that may be incorrect. 
+    \item I mostly did literature review, environment configuration to have a stable development framework with various open source libraries, initial EDA with libraries and processes.
+    \item My action items are to get the full infrastructure in place and begin working with the initial datasets, as well as produce initial NLP preprocessing steps.
+\end{itemize}
+
+My refelction on Phase 2 materials is as follows. The value of Pytorch in this project is impossible to understate. Pytorch, NLTK, spaCy, and HuggingFace are instrumental to not just the NLP components but also the ability to apply deep learning to the project (e.g., LLM). I found the content on bias and fiarness to be very relevant to this project. As with people, there is a standard of being able to explain your reasons for an opinion, or decision. This expectation needs to be carried over to LLMs due to their increasing residency of daily life. In this project, providing evidence for truth will be incorporated into the system. This is an attempt to ensure transparency and improve trust in a truth detection system. In terms of bias, there will inherently be bias in this system due to the datasets used. This is an English/US dataset (majority), and therefore the biases within that language and culture will also be present. Future work could be  classifying what biases are present and indentify gaps in the data to help mitigate one-sidedness.
+}
+
+\activities{
+\begin{itemize}
+    \item Full stack development.
+    \item Project scope and timeline iteration.
+    \item Literature review.
+\end{itemize}
+
+}
+
+% \findings{
+    
+% }
+
+\nextSteps{
+    \begin{itemize}
+        \item Develop NLP processing pipeline.
+        \item Begin EDA on initial datasets (FEVER, Wikipedia, etc.)
+    \end{itemize}
+
+    The current tech stack (as planned, and currently built is this):
+    \begin{itemize}
+        \item Backend: Python, FastAPI, Uvicorn
+        \item Frontend: JavaScript, React, Vite
+        \item VCS/Deployment: Git, GitHub Actions for CI/CD, AWS
+        \item Database: PostgreSQL, Pinecone
+        \item NLP: SpaCy, NLTK, HuggingFace Transformers
+        \item Containerization: Docker (Docker compose)
+        \item EDA Packages: Jupyter Notebooks, Pandas, Matplotlib, Seaborn, NLTK, SpaCy, Transformers, Torch
+    \end{itemize}
+}
+
+\end{document}
