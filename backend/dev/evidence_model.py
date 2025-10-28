@@ -1,5 +1,7 @@
 """
 Class definitions for tracking evidence to claim for retrieval and verification.
+
+This should allow the ER to track where and what the evidence came from when pulling from RAG.
 """
 from typing import Optional
 from pydantic import BaseModel, HttpUrl
@@ -7,7 +9,7 @@ from pydantic import BaseModel, HttpUrl
 
 # source information for a piece of evidence
 class EvidenceSource(BaseModel):
-    type: str  # 'wikipedia', 'fever', 'news', etc.
+    type: str
     title: str
     url: Optional[HttpUrl] = None
     author: Optional[str] = None

@@ -22,32 +22,29 @@ class WikiEvidenceRetrievalPipeline:
         self.semantic_retriever = SemanticRetriever()
         self.cache = {}
         self.top_k_evidence = 10
+        self.top_k_claim_queries = 2
 
     def retrieve_evidence(self, claim: ClaimDetector, max_articles: int = 3, max_passages_per_article: int = 3) -> List[Evidence]:
         all_evidence = []
-        # Use multiple search queries from claim extraction
-        for query in claim.search_queries[:2]:  # Use top 2 queries
-            # Search Wikipedia for articles
+        # determine how many queries to use in the search for k similar articles
+        n = min(len(claim['search_queries']), self.top_k_claim_queries)
+        for query in claim['search_queries'][:n]:
             article_titles = self.wiki_retriever.search_articles(query, limit=max_articles)
-
             for title in article_titles:
-                # Check cache
+                # check cache and add
                 cache_key = f"{title}:{query}"
                 if cache_key in self.cache:
                     all_evidence.extend(self.cache[cache_key])
                     continue
-
-                # Get article content
+                # else get content
                 content = self.wiki_retriever.get_article_content(title)
                 if not content:
                     continue
-
-                # get the article chunks
+                # split article into chunks
                 passages = self.semantic_retriever.chunk_text(content)
-
                 # perform semantic search for relevant passages
                 relevant_passages = self.semantic_retriever.semantic_search(
-                    claim.text,
+                    claim['text'],
                     passages,
                     top_k=max_passages_per_article
                 )
@@ -63,7 +60,7 @@ class WikiEvidenceRetrievalPipeline:
                             url=f"https://en.wikipedia.org/wiki/{title.replace(' ', '_')}"
                         ),
                         relevance_score=passage_data['similarity'],
-                        claim_text=claim.text
+                        claim_text=claim['text']
                     )
                     evidence_list.append(evidence)
 
@@ -96,5 +93,5 @@ class WikiEvidenceRetrievalPipeline:
         results = {}
         for claim in claims:
             evidence = self.retrieve_evidence(claim)
-            results[claim.text] = evidence
+            results[claim['text']] = evidence
         return results

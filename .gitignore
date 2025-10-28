@@ -52,3 +52,6 @@ Thumbs.db
 .idea/
 *.sublime-project
 *.sublime-workspace
+
+# wikipedia 
+data/

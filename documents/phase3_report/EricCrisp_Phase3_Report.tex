@@ -1,0 +1,272 @@
+\documentclass[11pt,letterpaper]{article}
+
+% Essential packages
+\usepackage{fontspec}
+% \usepackage[utf8]{inputenc}
+% \usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{datetime}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{verbatim}
+\usepackage{url}
+\usepackage{svg}
+\usepackage{minted}
+
+% Page setup
+\geometry{margin=1in}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+% Header and footer setup
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Data Science Capstone: Project Proposal}
+\rhead{\today}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Code listing setup
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    breaklines=true,
+    captionpos=b,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red}
+}
+
+% Custom commands
+\newcommand{\heading}[1]{
+    \section*{\workingtitle}
+    \addcontentsline{toc}{section}{\workingtitle}
+    \textbf{Date:} #1 \\
+    \rule{\textwidth}{0.5pt}
+}
+
+\newcommand{\motivation}[1]{
+    \subsection*{Motivation and Significance}
+    \addcontentsline{toc}{subsection}{Motivation and Significance}
+    #1
+}
+
+\newcommand{\plan}[1]{
+    \section*{Project Plan and Timeline}
+    \addcontentsline{toc}{section}{Timeline and Milestones}
+    #1
+}
+
+\newcommand{\data}[2]{
+    \section*{Datasets and Models}
+    \addcontentsline{toc}{section}{Datasets and Models}
+    \subsection*{Datasets}
+    #1
+    \subsection*{Models}
+    #2
+}
+
+\newcommand{\problemDefBackground}[1]{
+    \section*{Problem Definition and Background}
+    \addcontentsline{toc}{section}{Problem Definition and Background}
+    #1
+}
+
+\newcommand{\litReview}[1]{
+    \section*{Literature Review}
+    \addcontentsline{toc}{section}{Literature Review}
+    #1
+}
+
+\newcommand{\methodology}[5]{
+    \section*{Methodology}
+    \addcontentsline{toc}{section}{Methodology}
+    \subsection*{Overview}
+    #1
+    \subsection*{Models and Algorithms}
+    #2
+    \subsection*{Tech Stack}
+    #3
+    \subsection*{Implementation Strategy}
+    #4
+    \subsection*{Evaluation Metrics}
+    #5
+}
+
+
+\newcommand{\eda}[3]{
+    \section*{Exploratory Data Analysis}
+    \addcontentsline{toc}{section}{Exploratory Data Analysis}
+    \subsection*{Data Understanding}
+    #1
+    \subsection*{Data Cleaning and Preprocessing}
+    #2
+    \subsection*{Exploratory Data Analysis}
+    #3
+}
+
+\newcommand{\taskExploration}[3]{
+    \section*{Model Tasks Exploration}
+    \addcontentsline{toc}{section}{Model Tasks Exploration}
+    \subsection*{Task Definition}
+    #1
+    \subsection*{Feature Engineering}
+    #2
+    \subsection*{Model Selection}
+    #3
+}
+
+\newcommand{\baselineModels}[2]{
+    \section*{Baseline Models}
+    \addcontentsline{toc}{section}{Baseline Models}
+    \subsection*{Model Implementation}
+    #1
+    \subsection*{Model Evaluation}
+    #2
+}
+
+\newcommand{\mentor}[5]{
+    \subsection*{Mentor Credentials}
+    \addcontentsline{toc}{subsection}{Mentor Credentials}
+    \begin{itemize}
+        \item \textbf{Name:} #1
+        \item \textbf{Email:} #2
+        \item \textbf{Phone Number:} #3
+        \item \textbf{Relevant Skills and Experience:} #4
+        \item \textbf{LinkedIn:} #5
+    \end{itemize}
+}
+
+% Title page setup
+\newcommand{\workingtitle}{A Statistical Truth Detection System}
+\title{\Large \textbf{DATS 598: Data Science Capstone} \\ 
+       \large Project Proposal \\
+       \vspace{0.5cm}
+       \normalsize \textbf{\workingtitle}}
+\author{Eric Crisp \\ 
+        University of Pennsylvania \\
+        \texttt{ecrisp@upenn.edu}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+
+% =========================================
+% Describe the source and format of your data. 
+% Explain the process of data collection or acquisition. 
+% Discuss any potential issues or challenges with the data.
+% =========================================
+
+\eda{
+
+In this project the data utilized will essentially be from two sources. The first source is wikipedia dataset that is pulled from a recent wikipedia dump. This contains the entirety of wikipedia articles that are then embedded using a selected model and stored in a vector database locally. The second source of data is collected from LLM outputs. This data is parsed via a text processes pipeline to extract the claims made. These two sources serve as the backbone for the truth detection system. \\ 
+
+The potential issues certainly lie within the NLP, text cleaning processes as well as the variability coming out of the LLM. Assuming the text processing is done well, alignment with evidence retrieved should enable a straightforward verification of claims found, however, if either the claims found or evidence retrieved are poorly done, the system will struggle to perform well. \\
+
+}
+% =========================================
+% Outline the steps taken to clean and preprocess the data (handling missing values, outliers, etc.). 
+% Provide code snippets or examples of the data cleaning process.
+% =========================================
+{
+
+The text preprocessing pipeline is designed to do a few things: clean text, detect claims, and extract claims from said text. This is an object oriented process so if multiple text blocks were to run at a time, each would be handled by its own instance and enable parallel processing with text-specific evidence associated with it. \\
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{example-image.png} % Adjust width or use height
+    \caption{Cleaning Process.}
+    \label{fig:clean_preprocess}
+\end{figure}
+
+As shown in Figure~\ref{fig:clean_preprocess}, is an example line.
+
+\begin{listing}[h]
+\begin{minted}[linenos]{python}
+def greet(name):
+    print(f"Hello, {name}!")
+\end{minted}
+\caption{Greeting function in Python.}
+\label{lst:greet}
+\end{listing}
+
+}
+{
+
+Perform descriptive statistics and visualizations to understand the data characteristics. 
+Analyze the distribution of features and target variables. 
+Identify any patterns, correlations, or potential relationships within the data. Include relevant plots, charts, and visualizations to support your findings.
+
+
+}
+
+% =========================================
+% summarize the project here !! 
+% =========================================
+
+\taskExploration{
+
+Clearly define the problem or task you are trying to solve (e.g., classification, regression, clustering). 
+Explain the rationale behind choosing this specific task. 
+
+
+}
+{
+
+Describe the process of selecting and transforming relevant features for your task. 
+Discuss any domain-specific knowledge or techniques applied to feature engineering. 
+
+
+}
+{
+
+Explore different model architectures or algorithms suitable for your task. 
+Justify the choice of models based on the data characteristics and task requirements.
+
+
+}
+
+
+% =========================================
+% summarize the project here !! 
+% =========================================
+
+\baselineModels{
+
+Provide details on the implementation of your baseline models. 
+Include code snippets or references to the code used for training and evaluation. 
+
+
+}
+{
+
+Define the evaluation metrics used to assess model performance. 
+Report the performance of your baseline models on the training, validation, and test sets.
+
+
+}
+
+\end{document}

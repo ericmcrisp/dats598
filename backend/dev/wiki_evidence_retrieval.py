@@ -1,5 +1,5 @@
 """
-IR for evidence gathering from Wikipedia.
+IR for evidence gathering from Wikipedia API.
 """
 import requests
 import wikipediaapi

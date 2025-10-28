@@ -5,12 +5,14 @@ This class is the pipeline that takes a text input and preprocesses it such that
 from claim_detection import ClaimDetector
 from claim_extraction import ClaimExtractor
 from text_preprocessing import TextPreprocessor
+from config import Config
 
 import pandas as pd
 
 
 class ClaimDetectionPipeline:
     def __init__(self):
+        self.cfg = Config()
         self.preprocessor = TextPreprocessor()
         self.detector = ClaimDetector()
         self.extractor = ClaimExtractor()

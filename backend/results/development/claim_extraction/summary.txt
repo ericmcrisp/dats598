@@ -1,1 +1,1 @@
-Average semantic similarity: 0.6449
+Average semantic similarity: 0.7336
