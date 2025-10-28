@@ -8,7 +8,8 @@ Going to use this as drop down list in the application too.
 class Config:
 
     # vector db settings
-    FAISS_INDEX_PATH = '../data/wikipedia/faiss_index'
+    FAISS_INDEX_PATH = 'data/vector_db/faiss_index'
+    
     EMBEDDING_MODEL_NAME = 'all-MiniLM-L6-v2' 
     # EMBEDDING_MODEL_NAME = 'nvidia/llama-embed-nemotron-8b'
     # EMBEDDING_MODEL_NAME = 'Qwen/Qwen3-Embedding-0.6B'

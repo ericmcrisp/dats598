@@ -52,3 +52,11 @@ Thumbs.db
 .idea/
 *.sublime-project
 *.sublime-workspace
+
+# wikipedia 
+data/
+
+# ignore these too
+.claude/
+claude_temp/
+*_test_*.py
