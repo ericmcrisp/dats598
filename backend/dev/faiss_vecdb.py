@@ -1,17 +1,12 @@
 """
-IR for evidence gathering from Wikipedia.
+create the faiss vector database
 """
-import requests
 
 import faiss
 import pickle
-import numpy as np
-from typing import List, Dict, Optional
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
-
-from evidence_model import Evidence, EvidenceSource
 from config import Config
 
 class FaissVecDB:

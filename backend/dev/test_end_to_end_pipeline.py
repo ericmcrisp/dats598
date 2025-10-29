@@ -28,13 +28,19 @@ def test_complete_pipeline():
     claims = claim_pipeline.process_text(text)
 
 
-    print(f"\n✓ Detected {len(claims)} claims:\n")
+    print("\n" + "="*70)
+    print("DETECT CLAIMS")
+    print("="*70)
+    print(f"\nDetected {len(claims)} claims:\n")
     for i, claim in enumerate(claims, 1):
         print(f"{i}. {claim['text']}")
         print(f"   Confidence: {claim['confidence']:.2f} | Type: {claim['type']}")
-        print(f"   Search Queries: {claim['search_queries'][:2]}\n")
+        print(f"   Search Queries: {claim['search_queries'][:3]}\n")
 
     # retrieve evidence
+    print("\n" + "="*70)
+    print("RETRIEVE EVIDENCE")
+    print("="*70)
     evidence_retriever = EvidenceRetriever()
     claims_with_evidence = evidence_retriever.retrieve_evidence_for_claims(claims)
 
@@ -52,39 +58,42 @@ def test_complete_pipeline():
             print("  No evidence found!")
 
     # # verify claims
-    # verifier = FactVerifier()
-    # verification_results = verifier.verify_claims(claims_with_evidence)
+    print("\n" + "="*70)
+    print("VERIFY CLAIMS")
+    print("="*70)
+    verifier = FactVerifier()
+    verification_results = verifier.verify_claims(claims_with_evidence)
     
-    # for result in verification_results:
-    #     print(f"\n{'='*70}")
-    #     print(f"Claim: {result['claim']}")
-    #     print(f"{'='*70}")
-    #     print(f"Verdict: {result['verdict']}")
-    #     print(f"Confidence: {result['confidence']:.2f}")
-    #     print(f"Evidence Count: {result['evidence_count']}")
-    #     print(f"Max Similarity: {result['max_similarity']:.3f}")
-    #     print(f"Avg Similarity: {result['avg_similarity']:.3f}")
-    #     print(f"\nExplanation: {result['explanation']}")
+    for result in verification_results:
+        print(f"\n{'='*70}")
+        print(f"Claim: {result['claim']}")
+        print(f"{'='*70}")
+        print(f"Verdict: {result['verdict']}")
+        print(f"Confidence: {result['confidence']:.2f}")
+        print(f"Evidence Count: {result['evidence_count']}")
+        print(f"Max Similarity: {result['max_similarity']:.3f}")
+        print(f"Avg Similarity: {result['avg_similarity']:.3f}")
+        print(f"\nExplanation: {result['explanation']}")
 
-    #     if result['best_evidence']:
-    #         print(f"\nBest Supporting Evidence:")
-    #         print(f"  Source: {result['best_evidence']['source']}")
-    #         print(f"  Similarity: {result['best_evidence']['similarity']:.3f}")
-    #         print(f"  Text: {result['best_evidence']['text'][:250]}...")
+        if result['best_evidence']:
+            print(f"\nBest Supporting Evidence:")
+            print(f"  Source: {result['best_evidence']['source']}")
+            print(f"  Similarity: {result['best_evidence']['similarity']:.3f}")
+            print(f"  Text: {result['best_evidence']['text'][:250]}...")
 
     # # asses
-    # print("\n" + "="*70)
-    # print("OVERALL ASSESSMENT")
-    # print("="*70)
+    print("\n" + "="*70)
+    print("OVERALL ASSESSMENT")
+    print("="*70)
 
-    # assessment = verifier.get_overall_assessment(verification_results)
+    assessment = verifier.get_overall_assessment(verification_results)
 
-    # print(f"\nTotal Claims: {assessment['total_claims']}")
-    # print(f"  ✓ Supports: {assessment['supports']}")
-    # print(f"  ✗ Refutes: {assessment['refutes']}")
-    # print(f"  ? Not Enough Info: {assessment['not_enough_info']}")
-    # print(f"\nAverage Confidence: {assessment['avg_confidence']:.2f}")
-    # print(f"Accuracy Rate: {assessment['accuracy_rate']:.1%}")
+    print(f"\nTotal Claims: {assessment['total_claims']}")
+    print(f"  Supports: {assessment['supports']}")
+    print(f"  Refutes: {assessment['refutes']}")
+    print(f"  Not Enough Info: {assessment['not_enough_info']}")
+    print(f"\nAverage Confidence: {assessment['avg_confidence']:.2f}")
+    print(f"Accuracy Rate: {assessment['accuracy_rate']:.1%}")
 
 
 if __name__ == "__main__":
