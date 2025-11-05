@@ -16,13 +16,28 @@ class Settings(BaseSettings):
     # NLP model
     SPACY_MODEL: str = "en_core_web_sm"
 
-    # Paths
+    # relevant paths
     BASE_DIR: Path = Path(__file__).resolve().parent
     DATA_DIR: Path = BASE_DIR / "data"
+    FAISS_INDEX_PATH: str = str(DATA_DIR / "vector_db/faiss_index")
+
+    # embedding to use
+    EMBEDDING_MODEL_NAME: str = "all-MiniLM-L6-v2"
+    EMBEDDING_DIM: int = 384
+
+    # claim threshold
+    CLAIM_CONFIDENCE_THRESHOLD: float = 0.6
+
+    # evidence retrieval
+    EVIDENCE_TOP_K: int = 5
+    EVIDENCE_MIN_SIMILARITY: float = 0.3
+
+    # verification data
+    SUPPORTS_THRESHOLD: float = 0.50
 
     class Config:
         env_file = f".env.{os.getenv('ENV', 'development')}"
+        env_file_encoding = "utf-8"
 
 
-# Create a single settings instance to import anywhere
 settings = Settings()

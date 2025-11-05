@@ -55,3 +55,8 @@ Thumbs.db
 
 # wikipedia 
 data/
+
+# ignore these too
+.claude/
+claude_temp/
+*_test_*.py

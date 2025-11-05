@@ -36,7 +36,7 @@
 % Header and footer setup
 \pagestyle{fancy}
 \fancyhf{}
-\lhead{Data Science Capstone: Project Proposal}
+\lhead{Data Science Capstone: EDA}
 \rhead{\today}
 \cfoot{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
@@ -180,7 +180,6 @@
 % =========================================
 
 \eda{
-
 In this project the data utilized will essentially be from two sources. The first source is wikipedia dataset that is pulled from a recent wikipedia dump. This contains the entirety of wikipedia articles that are then embedded using a selected model and stored in a vector database locally. The second source of data is collected from LLM outputs. This data is parsed via a text processes pipeline to extract the claims made. These two sources serve as the backbone for the truth detection system. \\ 
 
 The potential issues certainly lie within the NLP, text cleaning processes as well as the variability coming out of the LLM. Assuming the text processing is done well, alignment with evidence retrieved should enable a straightforward verification of claims found, however, if either the claims found or evidence retrieved are poorly done, the system will struggle to perform well. \\
@@ -194,32 +193,35 @@ The potential issues certainly lie within the NLP, text cleaning processes as we
 
 The text preprocessing pipeline is designed to do a few things: clean text, detect claims, and extract claims from said text. This is an object oriented process so if multiple text blocks were to run at a time, each would be handled by its own instance and enable parallel processing with text-specific evidence associated with it. \\
 
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.8\textwidth]{example-image.png} % Adjust width or use height
-    \caption{Cleaning Process.}
-    \label{fig:clean_preprocess}
-\end{figure}
-
-As shown in Figure~\ref{fig:clean_preprocess}, is an example line.
-
-\begin{listing}[h]
-\begin{minted}[linenos]{python}
-def greet(name):
-    print(f"Hello, {name}!")
-\end{minted}
-\caption{Greeting function in Python.}
-\label{lst:greet}
-\end{listing}
+The cleaning pipeline involes invoking a ClaimDetectionPipeline which consists of three subclasses: TextCleaner, ClaimDetector, and a ClaimExtractor. The text cleaner class contains the methods used for cleaning a string of text. This includes removing URLs, various erroneous characters, fixing punctuation and spacing, and other classic text preprocessing features. This is also a first iteration of the cleaning process. The next step is the claim detection. This is where the text is parsed one sentence at a time and it is discerned by NLP methods and rule-based approaches whether a sentence is a claim or not. Rules that are commonly applied in this application are things like analyzig the puncutation at the end of a sentence, whether dates are involved, whether the sentence contains opinion words (e.g., think, feel, doubt, etc.). A sort of ranking is applied where if a certain number of patterns (or claim-matching rules) are met, then the sentence 'value' can surpass a claim 'threshold'. If a sentence is determined to be a claim, it is essentially stored and passed onto the next step: claim extraction. Claim extraction is the process of parsing a claim and discerning what is being claimed. This is where NLP methods come into play such as subject-verb-object extraction, named entity recognition, and dependency parsing. The end result of this pipeline is a cleaned text, a list of detected claims, and a list of extracted claims. \\
 
 }
 {
 
-Perform descriptive statistics and visualizations to understand the data characteristics. 
-Analyze the distribution of features and target variables. 
-Identify any patterns, correlations, or potential relationships within the data. Include relevant plots, charts, and visualizations to support your findings.
+% Perform descriptive statistics and visualizations to understand the data characteristics. 
+% Analyze the distribution of features and target variables. 
+% Identify any patterns, correlations, or potential relationships within the data. Include relevant plots, charts, and visualizations to support your findings. \\
 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../../backend/results/development/claim_detection/confusion_matrix.png} 
+    \caption{Confusion matrix for inital claim detection process.}
+    \label{fig:confusion_matrix}
+\end{figure}
+
+As shown in Figure~\ref{fig:confusion_matrix}, the claim detection process was tested by scanning the facts from the FEVER database in conjunction with sentences from the NLTK Brown database which are assumed to be non-factual. The results of a basic classification test based on the rules-based approach is reflected in the confusion matrix. \\
+
+The other level of data cleaning is completed via the claim extraction. This alignment is determined based on the simiarity given an embedding to the extracted claim. The chosen embedding is in work because the embedding selection affects the ability to select relevant documents via the RAG process. Below, in Figure~\ref{fig:similarity_hist}, the distribution of similarities clearly show a critical gap in capturing a significant portion of the original claim contents. \\
+
+The data used in this project includes text classified into "SUPPORTS', 'REFUTES', or 'INCONCLUSIVE'. This is part of the cleaned dataset from FEVER. The entirety of the English Wikipedia articles are chunked and put into a vector database for retrieval. This retrieval is based on the K-nearest neighbors closest to the extracted claims embedding. \\
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../../backend/results/development/claim_extraction/similarity_hist.png} 
+    \caption{Histogram showing the quanity of similarity of extracted claim to the original claim.}
+    \label{fig:similarity_hist}
+\end{figure}
 
 }
 
@@ -228,44 +230,63 @@ Identify any patterns, correlations, or potential relationships within the data.
 % =========================================
 
 \taskExploration{
+    
+% Clearly define the problem or task you are trying to solve (e.g., classification, regression, clustering). 
+% Explain the rationale behind choosing this specific task. 
 
-Clearly define the problem or task you are trying to solve (e.g., classification, regression, clustering). 
-Explain the rationale behind choosing this specific task. 
+The task at hand is essentially a classification problem. However, currently this is not solved with machine learning models such as decision trees or neural networks. Instead, this task is solved with a rules-based approach that leverages natural language processing techniques and information retrieval methods which is common practice in the literature. The rationale behind this choice is that the problem of truth detection is inherently tied to the ability to parse and understand language, as well as retrieve relevant information from a large corpus of text (in this case, Wikipedia, FEVER). By using a rules-based approach intially, this serves as an interpretable, consistent method to build out the rest of the process. \\
+
+In future work of this project, decision trees, random forrests, or even neural networks could be explored to see if they can enhance the performance of the truth detection system, specifically in determining if a sentence contains a claim. However, for the initial implementation, a rules-based approach is more suitable given the nature of the task and the available data. \\
+
+}
+{
+
+% Describe the process of selecting and transforming relevant features for your task. 
+% Discuss any domain-specific knowledge or techniques applied to feature engineering. 
+
+Because machine learning is initially not in this project, feature engineering is not directly applicable. However, the cleaning stages, wikipeedia embedding, and claim extraction processes can be viewed as feature engineering steps that prepare the data for the truth detection task. \\
 
 
 }
 {
 
-Describe the process of selecting and transforming relevant features for your task. 
-Discuss any domain-specific knowledge or techniques applied to feature engineering. 
+% Explore different model architectures or algorithms suitable for your task. 
+% Justify the choice of models based on the data characteristics and task requirements. \\
 
-
-}
-{
-
-Explore different model architectures or algorithms suitable for your task. 
-Justify the choice of models based on the data characteristics and task requirements.
-
+The embedding model selection justification is based on their ability to algin similar segments of text. The MTEB ranking is the basis for finding high performance embeddings that enable similarity search to find relevant documents. This is by no means the only relevant metric in this process. As mentioned previously, there is significant opportunity to include more advanced classification methods within the claim detection and extraction steps of this pipeline and those will be examined in future work. The current progress reflects a minimum viable process. Advanced methods for claim detection could involve neural networks, but would likely perform better with a random forest classification model trained on the FEVER and Brown datasets given the multitiered structure of grammar-based rules. \\
 
 }
 
 
 % =========================================
-% summarize the project here !! 
+% Provide details on the implementation of your baseline models. 
+% Include code snippets or references to the code used for training and evaluation. 
+
+% Define the evaluation metrics used to assess model performance. 
+% Report the performance of your baseline models on the training, validation, and test sets.
+
 % =========================================
 
 \baselineModels{
+The baseline model for this truth detection system is a rules-based approach that leverages natural language processing techniques and information retrieval methods (RAG). The implementation involves several key components: text cleaning, claim detection, claim extraction, evidence retrieval, and claim verification. The models used within this process currently are limited to the embedding techniques. Because this process will be wihtin a web app, I created a local vector database with Faiss. Between the claim embedding and document embedding, the options tested have included:
 
-Provide details on the implementation of your baseline models. 
-Include code snippets or references to the code used for training and evaluation. 
+\begin{itemize}
+    \item llama-embed-nemotron-8b
+    \item gemini-embedding-001
+    \item Qwen/Qwen3-Embedding-0.6B
+    \item all-MiniLM-L6-v2
+\end{itemize}
 
+The embeddings come from simple, MVP type approaches to optimizing with the best available via \href{https://huggingface.co/spaces/mteb/leaderboard}{MTEB Embedding Leaderboard}. The quality of the embeddings directly affects the quality of the evidence retrieved from the vector database, however, the quality of the query is also dependent on the ability to synthesis the claim. A more nuanced analysis of the subprocesses (claim detection, claim extraction, query generation, query embedding, document embedding) will be concluded when the entire chain is fully connected. \\
 
 }
 {
 
-Define the evaluation metrics used to assess model performance. 
-Report the performance of your baseline models on the training, validation, and test sets.
+% The evaluation metrics for the truth detection system are designed to assess the accuracy and reliability of the claim verification process. The primary metrics used include precision, recall, and F1-score. \\
 
+For claim detection procedures, FEVER database was used in conjunction with text from the nltk Brown dataset which contains strings of text that are not factual, or claim based. This implies that all of the fever datasets were claims, and the sentences from Brown were not claims. With this definition, metris like precision, accuracy, f1-score were applied. \\
+
+From the Figure~\ref{fig:confusion_matrix} above, the confusion matrix clearly shows there is plenty of room for improvement in the claim detection algorithm. An accuracy of 63.4\% is marginally better than random (50\%). Precision being 80.6\% shows a low false positive rate which is good, however, recall is low at only 35.5\% indicating a high false negative rate. This generally implies the algorithms in place do not accurately pick up on the nuances of what entails a claim. The system is too conservative in the current appraoch. Ways to improve this include lowering the confidence threshold, creating better rules for pattern detection of a claim, or adjust the weighting of pattern importance. \\
 
 }
 
