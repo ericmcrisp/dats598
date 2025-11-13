@@ -6,9 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.health import router as health_router
 from app.api.prompt import router as prompt_router
 from app.api.public import router as public_router
-
-# now import the backend pipeline
-# from app.api.factcheck import router as factcheck_router
+from app.api.factcheck import router as factcheck_router
 
 
 app = FastAPI()
@@ -32,15 +30,28 @@ def read_root():
 app.include_router(health_router, prefix="/api")
 # prompt string GET
 app.include_router(prompt_router, prefix="/api")
-# run the fact checking pipeline
-# app.include_router(factcheck_router, prefix="/api")
 # give the frontend the ability to change the config
 app.include_router(public_router, prefix="/api")
+# run the fact checking pipeline
+app.include_router(factcheck_router, prefix="/api")
+
 
 def start_app():
-    print("Environment:", settings.ENV)
-    print("Using spaCy model:", settings.SPACY_MODEL)
-    # print("ClaimBuster key loaded:", bool(settings.CLAIMBUSTER_API_KEY))
+    print("=" * 50)
+    print(f"Environment: {settings.ENV}")
+    print(f"Using spaCy model: {settings.SPACY_MODEL}")
+    print(f"Frontend URL: {settings.FRONTEND_URL}")
+    print(f"Backend Port: {settings.BACKEND_PORT}")
+    print("=" * 50)
+    
+    # Preload ML models if needed
+    # try:
+    #     from app.api.ml import get_model
+    #     print("Loading SentenceTransformer model...")
+    #     get_model()
+    #     print("✓ ML model loaded successfully")
+    # except Exception as e:
+    #     print(f"⚠️  Warning: Could not preload ML model: {e}")
 
 
 if __name__ == "__main__":

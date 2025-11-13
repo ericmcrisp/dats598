@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     ENV: str = "development"
     DEBUG: bool = False
 
+    # connections
+    FRONTEND_URL: str = "http://localhost:5173" 
+    BACKEND_PORT: int = 8000
+
     # api keys
     CLAIMBUSTER_API_KEY: str | None = None
     OPENAI_API_KEY: str | None = None
@@ -17,9 +21,10 @@ class Settings(BaseSettings):
     SPACY_MODEL: str = "en_core_web_sm"
 
     # relevant paths
-    BASE_DIR: Path = Path(__file__).resolve().parent
+    BASE_DIR: Path = Path(__file__).resolve().parent.parent
     DATA_DIR: Path = BASE_DIR / "data"
     FAISS_INDEX_PATH: str = str(DATA_DIR / "vector_db/faiss_index")
+    EMBEDDING_DB_PATH: str = str(DATA_DIR / "embeddings/embeddings.db")
 
     # embedding to use
     EMBEDDING_MODEL_NAME: str = "all-MiniLM-L6-v2"

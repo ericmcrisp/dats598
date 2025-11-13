@@ -1,5 +1,6 @@
 import spacy
 import random
+from app.models.prompt import PromptResponse
 from textblob import TextBlob
 
 nlp = spacy.load("en_core_web_sm")
@@ -27,13 +28,13 @@ def analyze_prompt(text: str) -> dict:
         sent_type = "Statement"
 
     # categorize it as a fact or not (placeholder)
-    is_factual = random.random() < 0.5
+    is_factual = 'Factual' if random.random() < 0.5 else 'Opinion'
 
-    # THIS is what the frontend will be recieving
-    return {
-        "sentence_type": sent_type,
-        "is_factual": is_factual,
-        "subjectivity": blob.sentiment.subjectivity,
-        "entities": entities,
-        "main_verb": main_verb
-    }
+    return PromptResponse(
+        sentence_type=sent_type,
+        is_factual=is_factual,
+        subject=blob.sentiment.subjectivity,  # renamed from subjectivity
+        entities=entities,
+        main_verb=main_verb,
+        cleaned=text.strip()
+    )

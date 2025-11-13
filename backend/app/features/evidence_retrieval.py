@@ -2,7 +2,7 @@
 RAG using existing FaissVecDB
 """
 from typing import List, Dict
-from app.models.claim import Claim
+from app.models.claim import Claim, ClaimComponent
 from app.models.evidence import Evidence, EvidenceSource
 from app.utils.faiss_vecdb import FaissVecDB
 from app.core.config import settings
@@ -16,14 +16,16 @@ class EvidenceRetriever:
         self.top_k_queries = self.cfg.EVIDENCE_TOP_K
 
     # er for a single claim.
-    def retrieve_evidence_for_claim(self, claim_dict: Dict,
+    def retrieve_evidence_for_claim(self, claim: Claim,
                                     top_k: float = None,
                                     min_similarity: float = None) -> List[Evidence]:
-        
+
+        # more configuration parameters
         top_k = top_k or self.cfg.EVIDENCE_TOP_K
         min_similarity = min_similarity or self.cfg.EVIDENCE_MIN_SIMILARITY
-        claim_text = claim_dict['text']
-        search_queries = claim_dict.get('search_queries', [claim_text])
+        # pull out the original claim text
+        claim_text = claim.text
+        search_queries = claim.searches if claim.searches else claim_text
         # collect evidence from multiple queries
         all_evidence = []
         seen_texts = set()
@@ -62,7 +64,7 @@ class EvidenceRetriever:
         return all_evidence[:top_k]
 
     # handle all the claims
-    def retrieve_evidence_for_claims(self, claims: List[Dict]) -> Dict[str, List[Evidence]]:
+    def retrieve_evidence_for_claims(self, claims: List[Claim]) -> Dict[str, List[Evidence]]:
         results = {}
         for claim in claims:
             evidence = self.retrieve_evidence_for_claim(claim)

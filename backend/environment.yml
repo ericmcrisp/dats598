@@ -1,0 +1,36 @@
+name: deploy
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - numpy=1.26.4
+  - pandas=2.2.3
+  - scikit-learn=1.5.2
+  - matplotlib=3.9.2
+  - tqdm
+  - requests
+  - pip:
+      # Core ML frameworks
+      - torch==2.2.2
+      - faiss-cpu==1.8.0.post1
+
+      # NLP and Transformers
+      - transformers==4.45.2
+      - sentence-transformers==3.1.0
+      - nltk==3.9.1
+      - spacy==3.8.2
+      - https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
+
+      # Web framework (optional, if you're serving a frontend)
+      - fastapi==0.117.1
+      - uvicorn==0.36.0
+      - starlette==0.48.0
+
+      # LLM APIs (include the ones you actually need)
+      - openai>=1.52.0
+      - huggingface_hub>=0.26.0
+
+      # Utilities
+      - python-dotenv

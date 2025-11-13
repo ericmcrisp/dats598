@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from app.core.config import settings
 from app.core.public_config import PublicConfig
+from app.utils.configuration_syncing import sync
 
 router = APIRouter()
 
@@ -14,11 +15,8 @@ async def get_config():
         supports_threshold=settings.SUPPORTS_THRESHOLD,
     )
 
-@router.post("/config", response_model=PublicConfig)
-async def update_config(new_config: PublicConfig):
-    settings.EMBEDDING_MODEL_NAME = new_config.embedding_model_name
-    settings.CLAIM_CONFIDENCE_THRESHOLD = new_config.claim_confidence_threshold
-    settings.EVIDENCE_TOP_K = new_config.evidence_top_k
-    settings.EVIDENCE_MIN_SIMILARITY = new_config.evidence_min_similarity
-    settings.SUPPORTS_THRESHOLD = new_config.supports_threshold
-    return new_config
+
+@router.put("/config", response_model=PublicConfig)
+def update_public_config(new_cfg: PublicConfig):
+    sync(new_cfg)
+    return new_cfg

@@ -1,0 +1,39 @@
+name: Generate UML Diagrams
+
+on:
+  push:
+    branches:
+      - main # Run this workflow whenever code is pushed to the 'main' branch
+
+jobs:
+  generate-uml:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} 
+          
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 📦 Install dependencies
+        run: |
+          # Install system-level dependency (Graphviz)
+          sudo apt-get update && sudo apt-get install -y graphviz
+          # Install Python dependencies
+          pip install pylint pydot
+          
+      - name: Generate UML Diagrams
+        run: |
+          pyreverse -o png -p backend_diagram -d backend/results/development/diagrams backend/app/
+
+      - name: Commit and Push Diagrams
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          file_pattern: "*.png"
+          commit_message: "docs: Auto-generated UML diagrams from pyreverse"
+          # This ensures the workflow doesn't run infinitely after committing the diagrams
+          skip_ci: true

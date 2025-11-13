@@ -7,7 +7,10 @@ services:
     volumes:
       - ./backend:/app 
     environment:
+      - ENV=production
       - PYTHONPATH=/app
+    env_file:
+      - .env.prod
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
   frontend:
@@ -17,7 +20,6 @@ services:
       - "5173:5173" # Vite default
     volumes:
       - ./frontend:/app
-      - /app/node_modules
     working_dir: /app
     command: npm run dev
     environment:

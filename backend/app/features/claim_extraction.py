@@ -1,10 +1,13 @@
 """"
 This is the class that pulls the claim components from a claim sentence.
+
+turns a sentence from ClaimDetector into a structured component
 """
 
 import re
 import spacy
 from app.core.config import settings
+from app.models.claim import ClaimComponent
 
 
 class ClaimExtractor:
@@ -27,13 +30,13 @@ class ClaimExtractor:
             'numbers': [],
             'locations': []
         }
+        
         # get named entities
         for ent in doc.ents:
             components['entities'].append({
                 'text': ent.text,
                 'type': ent.label_
             })
-
             if ent.label_ == 'DATE':
                 components['dates'].append(ent.text)
             elif ent.label_ in ['GPE', 'LOC']:
@@ -50,30 +53,31 @@ class ClaimExtractor:
             if token.dep_ in ['dobj', 'attr', 'pobj']:
                 components['object'] = token.text
 
-        return components
+        return ClaimComponent(**components)
 
     # generate search queries from for ER
     # return: list of search query strings
+    # claim_components is a ClaimComponent object
     def generate_search_queries(self, claim_components):
         queries = []
         # the original claim
-        queries.append(claim_components['original_text'])
-        
+        queries.append(claim_components.original_text)
+
         # subject and key entities
-        if claim_components['subject']:
-            entity_texts = [e['text'] for e in claim_components['entities']]
-            query = f"{claim_components['subject']} {' '.join(entity_texts[:2])}"
+        if claim_components.subject:
+            entity_texts = [x['text'] for x in claim_components.entities]
+            query = f"{claim_components.subject} {' '.join(entity_texts[:2])}"
             queries.append(query.strip())
 
         # main entities only (essentially keywords)
-        main_entities = [e['text'] for e in claim_components['entities'] 
-                        if e['type'] in ['PERSON', 'ORG', 'GPE', 'EVENT']]
+        keywords = ['PERSON', 'ORG', 'GPE', 'EVENT']
+        main_entities = [x['text'] for x in claim_components.entities if x['type'] in keywords]
         if main_entities:
             queries.append(' '.join(main_entities[:3]))
 
-        # subject + predicate 
-        if claim_components['subject'] and claim_components['predicate']:
-            queries.append(f"{claim_components['subject']} {claim_components['predicate']}")
+        # subject + predicate
+        if claim_components.subject and claim_components.predicate:
+            queries.append(f"{claim_components.subject} {claim_components.predicate}")
 
         # what else would be a good query to include....
 
