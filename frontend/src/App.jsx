@@ -100,8 +100,8 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
-      <div className="max-w-5xl mx-auto px-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-indigo-200 backdrop-blur-sm flex items-center justify-center py-8">
+      <div className="max-w-5xl mx-full px-6">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-5xl font-bold text-gray-800 mb-2">FactCheck AI</h1>
