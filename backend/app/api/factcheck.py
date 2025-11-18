@@ -14,6 +14,19 @@ async def factcheck(request: PromptRequest):
         pipe = fcp()
         print("Using this config:", pipe.cfg)
         response = pipe.process(request.text)
+        response.config = make_public(pipe.cfg)
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+def make_public(config: dict) -> dict:
+    """Return only the safe fields for the frontend."""
+    public_keys = [
+        "EMBEDDING_MODEL_NAME",
+        "EVIDENCE_TOP_K",
+        "SUPPORTS_THRESHOLD",
+        "MODE"
+    ]
+    config_dict = config.dict()
+    return {k: v for k, v in config_dict.items() if k in public_keys}

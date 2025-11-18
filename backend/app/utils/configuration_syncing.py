@@ -8,3 +8,4 @@ def sync(cfg: PublicConfig):
     settings.EVIDENCE_TOP_K = cfg.evidence_top_k
     settings.EVIDENCE_MIN_SIMILARITY = cfg.evidence_min_similarity
     settings.SUPPORTS_THRESHOLD = cfg.supports_threshold
+    settings.MODE = cfg.mode

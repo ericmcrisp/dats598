@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings
 from pathlib import Path
+import json
 import os
 
 
@@ -15,7 +16,6 @@ class Settings(BaseSettings):
     # api keys
     CLAIMBUSTER_API_KEY: str | None = None
     OPENAI_API_KEY: str | None = None
-    WIKIDATA_API_KEY: str | None = None
 
     # NLP model
     SPACY_MODEL: str = "en_core_web_sm"
@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     DATA_DIR: Path = BASE_DIR / "data"
     FAISS_INDEX_PATH: str = str(DATA_DIR / "vector_db/faiss_index")
     EMBEDDING_DB_PATH: str = str(DATA_DIR / "embeddings/embeddings.db")
+
+    # whether to use rules or llm
+    MODE: str = "rules"
 
     # embedding to use
     EMBEDDING_MODEL_NAME: str = "all-MiniLM-L6-v2"
@@ -45,4 +48,17 @@ class Settings(BaseSettings):
         env_file_encoding = "utf-8"
 
 
-settings = Settings()
+def load_settings():
+    # Path to your untracked secrets file
+    keys = Path(__file__).resolve().parent.parent / "private" / "keys.json"
+
+    # get keys.json if it exists
+    data = {}
+    if keys.exists():
+        with open(keys, "r") as f:
+            data = json.load(f)
+
+    return Settings(**data)
+
+
+settings = load_settings()

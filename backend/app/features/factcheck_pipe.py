@@ -14,6 +14,8 @@ from app.features.claim_extraction import ClaimExtractor
 from app.features.text_preprocessing import TextPreprocessor
 from app.features.evidence_retrieval import EvidenceRetriever
 from app.features.fact_verification import FactVerifier
+# adding in the LLM version of these processes
+# from app.features.llm_claim_analysis import LLMClaimAnalysis
 
 # config
 from app.core.config import settings
@@ -26,6 +28,7 @@ class FactCheckPipe:
     def __init__(self, cfg=None):
         self.cfg = cfg or settings
         # subclasses/processes need to share the cfg
+        # self.extractor = LLMClaimAnalysis()
         self.preprocessor = TextPreprocessor(self.cfg)
         self.nlp = self.preprocessor.nlp
         self.detector = ClaimDetector(self.cfg, nlp=self.nlp)

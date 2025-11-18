@@ -5,7 +5,7 @@ function App() {
   const [factCheckResult, setFactCheckResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null); // New state for success messages
+  const [successMessage, setSuccessMessage] = useState(null);
   const [showConfig, setShowConfig] = useState(false);
   const [showRaw, setShowRaw] = useState(false);
 
@@ -15,6 +15,7 @@ function App() {
     evidence_top_k: 5,
     evidence_min_similarity: 0.3,
     supports_threshold: 0.5,
+    mode: 'rules'
   });
 
   // Effect to clear success message after a delay
@@ -24,10 +25,18 @@ function App() {
 
   const handleConfigChange = (e) => {
     const { name, value } = e.target;
-    setConfig((prev) => ({
-      ...prev,
-      [name]: name === 'embedding_model_name' ? value : parseFloat(value),
-    }));
+    setConfig((prev) => {
+      const numericFields = [
+        'claim_confidence_threshold',
+        'evidence_top_k',
+        'evidence_min_similarity',
+        'supports_threshold'
+      ];
+      return {
+        ...prev,
+        [name]: numericFields.includes(name) ? parseFloat(value) : value,
+      };
+    });
   };
 
   const saveConfig = async () => {
@@ -61,7 +70,7 @@ function App() {
     setLoading(true);
     setFactCheckResult(null);
     setError(null);
-    setSuccessMessage(null); // Clear any old messages
+    setSuccessMessage(null);  
 
     try {
       const res = await fetch('/api/factcheck', {
@@ -184,7 +193,7 @@ function App() {
                   type="range"
                   name="evidence_min_similarity"
                   value={config.evidence_min_similarity}
-                  step="0.01"
+                  step="0.05"
                   min="0"
                   max="1"
                   onChange={handleConfigChange}
@@ -200,13 +209,27 @@ function App() {
                   type="range"
                   name="supports_threshold"
                   value={config.supports_threshold}
-                  step="0.01"
+                  step="0.05"
                   min="0"
                   max="1"
                   onChange={handleConfigChange}
                   className="w-full"
                 />
               </div>
+
+              <div>
+                <label className="block font-medium mb-2 text-gray-700">Pipeline Mode</label>
+                <select
+                  name="mode"
+                  value={config.mode}
+                  onChange={handleConfigChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="rules">Rules-Based</option>
+                  <option value="llm">LLM-Based (GPT)</option>
+                </select>
+              </div>
+
             </div>
 
             <button 

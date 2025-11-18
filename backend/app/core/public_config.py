@@ -6,3 +6,4 @@ class PublicConfig(BaseModel):
     evidence_top_k: int = 5
     evidence_min_similarity: float = 0.3
     supports_threshold: float = 0.5
+    mode: str = 'rules'

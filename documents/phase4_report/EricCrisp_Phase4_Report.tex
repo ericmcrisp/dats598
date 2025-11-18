@@ -1,0 +1,261 @@
+\documentclass[11pt,letterpaper]{article}
+
+% Essential packages
+\usepackage{fontspec}
+% \usepackage[utf8]{inputenc}
+% \usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{datetime}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{verbatim}
+\usepackage{url}
+\usepackage{svg}
+\usepackage{minted}
+
+% Page setup
+\geometry{margin=1in}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+% Header and footer setup
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{Data Science Capstone: Final Report}
+\rhead{\today}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Code listing setup
+\lstset{
+    basicstyle=\ttfamily\footnotesize,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    breaklines=true,
+    captionpos=b,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red}
+}
+
+% Custom commands
+\newcommand{\workingtitle}{A Statistical Truth Detection System}
+
+\newcommand{\heading}[1]{
+    \section*{\workingtitle}
+    \addcontentsline{toc}{section}{\workingtitle}
+    \textbf{Date:} #1 \\
+    \rule{\textwidth}{0.5pt}
+}
+
+\newcommand{\motivation}[1]{
+    \subsection*{Motivation and Significance}
+    \addcontentsline{toc}{subsection}{Motivation and Significance}
+    #1
+}
+
+\newcommand{\plan}[1]{
+    \section*{Project Plan and Timeline}
+    \addcontentsline{toc}{section}{Timeline and Milestones}
+    #1
+}
+
+\newcommand{\data}[2]{
+    \section*{Datasets and Models}
+    \addcontentsline{toc}{section}{Datasets and Models}
+    \subsection*{Datasets}
+    #1
+    \subsection*{Models}
+    #2
+}
+
+\newcommand{\problemDefBackground}[1]{
+    \section*{Problem Definition and Background}
+    \addcontentsline{toc}{section}{Problem Definition and Background}
+    #1
+}
+
+
+\newcommand{\methodology}[5]{
+    \section*{Methodology}
+    \addcontentsline{toc}{section}{Methodology}
+    \subsection*{Overview}
+    #1
+    \subsection*{Models and Algorithms}
+    #2
+    \subsection*{Tech Stack}
+    #3
+    \subsection*{Implementation Strategy}
+    #4
+    \subsection*{Evaluation Metrics}
+    #5
+}
+
+
+\newcommand{\eda}[3]{
+    \section*{Exploratory Data Analysis}
+    \addcontentsline{toc}{section}{Exploratory Data Analysis}
+    \subsection*{Data Understanding}
+    #1
+    \subsection*{Data Cleaning and Preprocessing}
+    #2
+    \subsection*{Exploratory Data Analysis}
+    #3
+}
+
+\newcommand{\taskExploration}[3]{
+    \section*{Model Tasks Exploration}
+    \addcontentsline{toc}{section}{Model Tasks Exploration}
+    \subsection*{Task Definition}
+    #1
+    \subsection*{Feature Engineering}
+    #2
+    \subsection*{Model Selection}
+    #3
+}
+
+\newcommand{\baselineModels}[2]{
+    \section*{Baseline Models}
+    \addcontentsline{toc}{section}{Baseline Models}
+    \subsection*{Model Implementation}
+    #1
+    \subsection*{Model Evaluation}
+    #2
+}
+
+\newcommand{\createAbstract}[1]{
+    \section*{Abstract}
+    \addcontentsline{toc}{section}{Abstract}
+    #1
+}
+
+
+\newcommand{\intro}[1]{
+    \section*{Introduction}
+    \addcontentsline{toc}{section}{Introduction}
+    #1
+}
+
+\newcommand{\litreview}[1]{
+    \section*{Literature Review}
+    \addcontentsline{toc}{section}{Literature Review}
+    #1
+}
+
+\newcommand{\design}[3]{
+    \section*{Experimental Design}
+    \addcontentsline{toc}{section}{Experimental Design}
+    \subsection*{Data}
+    #1
+    \subsection*{Evaluation}
+    #2
+    \subsection*{Baseline}
+    #3
+}
+
+\newcommand{\results}[2]{
+    \section*{Experimental Results}
+    \addcontentsline{toc}{section}{Experimental Results}
+    \subsection*{Extensions}
+    #1
+    \subsection*{Error Analysis}
+    #2
+}
+
+\newcommand{\conclusion}[1]{
+    \section*{Conclusion}
+    \addcontentsline{toc}{section}{Conclusion}
+    #1
+}
+
+\newcommand{\mentor}[5]{
+    \subsection*{Mentor Credentials}
+    \addcontentsline{toc}{subsection}{Mentor Credentials}
+    \begin{itemize}
+        \item \textbf{Name:} #1
+        \item \textbf{Email:} #2
+        \item \textbf{Phone Number:} #3
+        \item \textbf{Relevant Skills and Experience:} #4
+        \item \textbf{LinkedIn:} #5
+    \end{itemize}
+}
+
+% Title page setup
+\title{\Large \textbf{DATS 598: Data Science Capstone} \\ 
+       \large \textbf{DRAFT} Final Report \\
+       \vspace{0.5cm}
+       \normalsize \textbf{\workingtitle}}
+\author{Eric Crisp \\ 
+        University of Pennsylvania \\
+        \texttt{ecrisp@upenn.edu}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+
+\createAbstract{
+
+    This project is motivated by the need to have processes in place that reliably determine the validity of information. In this project, various methods such as rule-based and LLM-based methods are used to determine the truthfulness of statements. The intention of this project is to be integrated with a speech-to-text system such as during debates, speeches, or other venues where immediate response to a claim is the desired affect. Other use cases are screening textbooks, news articles, or other forms of information on the internet to help inform the reader. The goal of this project is to make no assumptions as to what is good, or bad, rather focus solely on what is verifiable from a "trusted" source (i.e., Wikipedia). Methods in the literature have been implemented, and extended, to achieve higher than baseline performance on the standard FEVER dataset in classifying whether a claim exists, what the claim is, and classifying it as true, false, or not enough information. This process incorporates a pipeline of methods that are applied to a text string. The pipeline can be configured by the user including thresholds, embedding, and method selections, however, the overall process follows the following architecture: preprocessing, claim detection, claim extraction, query generation, evidence retrieval, and claim verification. A configurable process is to swap the rules-based preprocessing, detection, extraction, and query generation with an API to an LLM (i.e., OpenAI, Claude, or even a fine-tuned BERT). The system is designed to be modular and easily extendable to incorporate new methods as they are developed while maintaining the same performance metrics allowing experimentation and apples-to-apples comparisons.
+
+}
+
+\intro{
+
+    Data science is the process of extracting insights and knowledge from data. Here, the data is considered to be text and the insights are the likelihood of the truthfulness of a claim within that text. Data science is also the science behind scaling these processes such that these automations can be applied reliably and efficiently. In this project, a large amount of effort was put into the scalability of this work. The complex algorithms found in classic computer science problems are absent from this project, but aspects like cleaning, preprocessing, NLP, information retrieval, and machine learning are present to bring a generic string to a verifiable, justifiable conclusion that is a classification of the claims within the string. \\
+
+    This is more than just a simple classification problem, more than just a neural network trained on pattern recognition. This project truly encompasses the data science pipeline. In practice, this project could be applied in real time during debates, speeches, lectures, TedTalks, or any other venue where an audience desires an objective validation on the speakers claims. The goal of this project is to be able to give the average person the ability to be critical of information and rely on the (likelihood of the) truth rather than on opinion alone. A clear example, and perhaps a more applicable example, is scrolling on Instagram, or TikTok, and you see a video raving about the health benefits of of a new diet claiming to be backed by science. Many will take this at face value, but with a fact checking system like this integrated into the platform, having a green checkmark in the corner could turn that 'insightful' video into a misleading hoax just as quickly. Certainly not a flawless system, but for impressionable audiences, this could be a small step in the right direction. \\
+
+    The problem being solved through this project is as follows: given a string of text, determining whether the claims present (if any) are true, false, or not enough information to yield a decision. This is a classification problem, but more-so a problem of information retrieval and information alignment. It is not enough to apply NLP practices, embed, and parse an output. The system must be able to reliably search and retrieve the relevant information, from trusted sources, and determine if the content retrieved confirms, or refutes the claim. This is the problem at hand, and it is not simple due to the nature of dealing with natural language; there are many pitfalls and many (partial) solutions that lead to unintentionally introducing biases, unintended consequences, or are unnecessarily restrictive. These are the problems at hand and will be discussed in detail in the following sections. \\
+
+}
+
+\litreview{
+
+    Cite and summarize 2-3 research papers related to your problem (1-2 paragraphs per paper). Describe how each paper addresses the problem you're working on. \\
+
+}
+
+\design{
+
+    The test data used for evaluation is the FEVER dataset. This consists of 185,445 claims, 145,449 of which are labeled as "SUPPORTS", 19,998 labeled as "REFUTES", and 19,998 labeled as "NOT ENOUGH INFO". Each claim is associated with a set of evidence sentences from Wikipedia that support or refute the claim. Indepdently, Wikipedia was pulled from an online distribution (English only), and was embedded with a select number of embeddings from Hugging Face. It is worth noting these embeddings do not neccesarily reflect the best possible embedding selection, however, were chosen due to simplicity for experimentation and code development. The dataset is designed to evaluate the accuracy, precision, recall, and F1 scores on the processes abilities to determine a claims, extract and embed them, and retrieve relevant evidence to make accurate predictions. \\
+
+}{
+    
+    There are several metrics used to evaluate the performance of the system. The primary metric is accuracy, which measures the proportion of correctly classified claims. Additionally, precision, recall, and F1 score are used to evaluate the performance of the system in more detail. Precision measures the proportion of true positives among all positive predictions, while recall measures the proportion of true positives among all actual positives. The F1 score is the harmonic mean of precision and recall, providing a single metric that balances both. These metrics are calculated for each class (SUPPORTS, REFUTES, NOT ENOUGH INFO) to provide a comprehensive evaluation of the system's performance across different types of claims. It is also important to be able to differentiate between text that contains a claim and text that does not. This is captured by introducing text from the natrual language toolkit's Brown library consisting of just text from novels - stories. These are classified as texts without claims. So, on top of evidence retrieval, there are also cases where the system must be able to differentiate without evidence correctly. \\
+}{
+    Compute and report the majority class baseline or other simple baseline.\\
+}
+
+\results{ 
+    Describe the published baseline you implemented (include citation and performance). Describe each extension you tried (1-2 paragraphs per extension, including performance comparison). \\
+}{
+    Perform an error analysis for your best-performing system (show examples, categorize errors). \\
+}
+
+\conclusion{
+    Summarize your accomplishments and how your implementations performed compared to state-of-the-art. \\
+}
+
+
+\end{document}
