@@ -1,0 +1,25 @@
+\begin{thebibliography}{1}
+
+\bibitem{automated_fact_check}
+James Thorne and Andreas Vlachos.
+\newblock Automated fact checking: Task formulations, methods and future directions, 2018.
+
+\bibitem{afc_survey}
+Zhijiang Guo, Michael Schlichtkrull, and Andreas Vlachos.
+\newblock A survey on automated fact-checking, 2022.
+
+\bibitem{claimbuster}
+Naeemul Hassan, Gensheng Zhang, Fatma Arslan, Josue Caraballo, Damian Jimenez, Siddhant Gawsane, Shohedul Hasan, Minumol Joseph, Aaditya Kulkarni, Anil~Kumar Nayak, Vikas Sable, Chengkai Li, and Mark Tremayne.
+\newblock Claimbuster: the first-ever end-to-end fact-checking system.
+\newblock {\em Proc. VLDB Endow.}, 10(12):1945–1948, August 2017.
+
+\bibitem{truth_is_universal}
+Lennart Bürger, Fred~A. Hamprecht, and Boaz Nadler.
+\newblock Truth is universal: Robust detection of lies in llms, 2024.
+
+\bibitem{gru}
+Ria Jha, Ena Motwani, Nivedita Singhal, and Rishabh Kaushal.
+\newblock Towards automated check-worthy sentence detection using gated recurrent unit.
+\newblock {\em Neural Computing \& Applications}, 35:11337 -- 11357, 2023.
+
+\end{thebibliography}
