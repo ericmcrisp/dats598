@@ -33,6 +33,9 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt}
 
+% handle the bibliography
+\bibliographystyle{unsrt}
+
 % Header and footer setup
 \pagestyle{fancy}
 \fancyhf{}
@@ -232,13 +235,31 @@
 
 \litreview{
 
-    Cite and summarize 2-3 research papers related to your problem (1-2 paragraphs per paper). Describe how each paper addresses the problem you're working on. \\
+    As mentioned previously, this project is an implementation of an automated fact checking system. The scope, relevance, and applicability has already been established, so the focus of this literature review will be related to the architecture of the system, the methods and processes, as well as the state of the art within the space. \\
+
+    Generally speaking, claims can be classified as true, false, or not enough information (NEI) to classify as true or false. The literature generally describes a pipeline to acheive this classification. The pipeline consists of three main stages: claim detection, evidence retrieval, and claim verification. The first stage is related to distinguishing between what is verifiable and what is not, and how to reliably achieve this. The second stage is related to retrieving evidence directly related to the detected claim from trusted sources. This is where things like document similarity comes into play (TF-IDF, similarity scores, etc.). The third and final stage is the classification. This is where deep learning and ML models can best be applied. \\
+
+    This references a paper \cite{automated_fact_check}, \cite{truth_is_universal}, \cite{afc_survey}, \cite{factcheck_editor}, \cite{claimbuster}. \\
 
 }
 
 \design{
 
     The test data used for evaluation is the FEVER dataset. This consists of 185,445 claims, 145,449 of which are labeled as "SUPPORTS", 19,998 labeled as "REFUTES", and 19,998 labeled as "NOT ENOUGH INFO". Each claim is associated with a set of evidence sentences from Wikipedia that support or refute the claim. Indepdently, Wikipedia was pulled from an online distribution (English only), and was embedded with a select number of embeddings from Hugging Face. It is worth noting these embeddings do not neccesarily reflect the best possible embedding selection, however, were chosen due to simplicity for experimentation and code development. The dataset is designed to evaluate the accuracy, precision, recall, and F1 scores on the processes abilities to determine a claims, extract and embed them, and retrieve relevant evidence to make accurate predictions. \\
+
+    The following are references to the datasets and models used in this project: \\
+
+    \begin{enumerate}
+        \item \textbf{FEVER} – A large-scale dataset for fact-checking based on Wikipedia. \\
+        \href{https://fever.ai}{https://fever.ai}
+
+        \item \textbf{Wikidata} – A collaboratively edited knowledge base from the Wikimedia Foundation. \\
+        \href{https://www.wikidata.org}{https://www.wikidata.org}
+
+        \item \textbf{T5} – A unified framework that casts all NLP tasks as text generation problems. \\
+        \href{https://arxiv.org/abs/1910.10683}{https://arxiv.org/abs/1910.10683}
+
+    \end{enumerate}
 
 }{
     
@@ -256,6 +277,9 @@
 \conclusion{
     Summarize your accomplishments and how your implementations performed compared to state-of-the-art. \\
 }
+
+
+\bibliography{references}
 
 
 \end{document}
