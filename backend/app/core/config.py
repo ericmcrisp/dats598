@@ -16,22 +16,26 @@ class Settings(BaseSettings):
     # api keys
     CLAIMBUSTER_API_KEY: str | None = None
     OPENAI_API_KEY: str | None = None
+    HF_TOKEN: str | None = None
 
     # NLP model
     SPACY_MODEL: str = "en_core_web_sm"
 
+    # embedding to use
+    EMBEDDING_MODEL_COMMON_NAME: str = "mini_L6"
+    EMBEDDING_MODEL_NAME: str = "all-MiniLM-L6-v2"
+    EMBEDDING_DIM: int = 384
+
     # relevant paths
     BASE_DIR: Path = Path(__file__).resolve().parent.parent
     DATA_DIR: Path = BASE_DIR / "data"
-    FAISS_INDEX_PATH: str = str(DATA_DIR / "vector_db/faiss_index")
-    EMBEDDING_DB_PATH: str = str(DATA_DIR / "embeddings/embeddings.db")
+    VECTOR_DB_DIR: Path = DATA_DIR / "vector_db"
+    EMBEDDING_DB_PATH: Path = DATA_DIR / "embeddings/embeddings.db"
+    FAISS_INDEX_PATH: str = str(VECTOR_DB_DIR / EMBEDDING_MODEL_COMMON_NAME)
 
     # whether to use rules or llm
     MODE: str = "rules"
-
-    # embedding to use
-    EMBEDDING_MODEL_NAME: str = "all-MiniLM-L6-v2"
-    EMBEDDING_DIM: int = 384
+    CLAIM_MODE: str = 'advanced'
 
     # claim threshold
     CLAIM_CONFIDENCE_THRESHOLD: float = 0.6
@@ -46,6 +50,22 @@ class Settings(BaseSettings):
     class Config:
         env_file = f".env.{os.getenv('ENV', 'development')}"
         env_file_encoding = "utf-8"
+
+
+def get_faiss_index_path(embedding_model_common_name: str) -> str:
+    # possible models
+    models = {'mini_L12': 'all-MiniLM-L12-v2',
+                'mini_L6': 'all-MiniLM-L6-v2',
+                'paraphase_L6': 'paraphrase-MiniLM-L6-v2',
+                'Gemma3': 'tencent/KaLM-Embedding-Gemma3-12B-2511',
+                'e5small': 'intfloat/e5-small-v2'}
+    base_vector_dir = Path(settings.VECTOR_DB_DIR)
+    index_path = base_vector_dir / embedding_model_common_name
+    try:
+        model_name = models.get(embedding_model_common_name)
+    except KeyError:
+        raise ValueError(f"Invalid embedding model name: {embedding_model_common_name}")
+    return str(index_path), model_name
 
 
 def load_settings():

@@ -7,12 +7,17 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
+# config
+from app.core.config import settings
+
 
 class SemanticRetriever:
 
-    def __init__(self, model_name: str = 'all-MiniLM-L6-v2'):
+    def __init__(self, cfg=None):
+        self.cfg = cfg or settings
+        model_name = self.cfg.EMBEDDING_MODEL_NAME
+        self.min_similarity_threshold = self.cfg.SEMANTIC_SIMILARITY_THRESHOLD
         self.encoder = SentenceTransformer(model_name)
-        self.min_similarity_threshold = 0.25
 
     # create chunks of overlappign sentences from text
     def chunk_text(self, text: str, chunk_size: int = 3, overlap: int = 1) -> List[str]:

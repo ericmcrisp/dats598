@@ -237,7 +237,7 @@
 
     As mentioned previously, this project is an implementation of an automated fact checking system. The scope, relevance, and applicability has already been established, so the focus of this literature review will be related to the architecture of the system, the methods and processes, as well as the state of the art within the space. \\
 
-    Generally speaking, claims can be classified as true, false, or not enough information (NEI) to classify as true or false. The literature generally describes a pipeline to acheive this classification. The pipeline consists of three main stages: claim detection, evidence retrieval, and claim verification. The first stage is related to distinguishing between what is verifiable and what is not, and how to reliably achieve this. The second stage is related to retrieving evidence directly related to the detected claim from trusted sources. This is where things like document similarity comes into play (TF-IDF, similarity scores, etc.). The third and final stage is the classification. This is where deep learning and ML models can best be applied. \\
+    Generally speaking, claims can be classified as true, false, or not enough information (NEI) to classify as true or false. The literature generally describes a pipeline to achieve this classification. The pipeline consists of three main stages: claim detection, evidence retrieval, and claim verification. The first stage is related to distinguishing between what is verifiable and what is not, and how to reliably achieve this. The second stage is related to retrieving evidence directly related to the detected claim from trusted sources. This is where things like document similarity comes into play (TF-IDF, similarity scores, etc.). The third and final stage is the classification. This is where deep learning and ML models can best be applied. \\
 
     % \cite{automated_fact_check}, \cite{truth_is_universal}, \cite{afc_survey}, \cite{factcheck_editor}, \cite{claimbuster}, \cite{gru}
 
@@ -253,12 +253,9 @@
     just to correctly identify the implied, or explicitly stated claim. \\
 
     The most useful outcome from the literature review is two fold: understanding the processes and
-    challenges involved with preprocessing as that appears to be the most consistent hurdle, and consis-
-    tent reliable databases to pull from rather than requiring a web crawler. Datasets such as FEVER,
-    Wikidata, Claimbuster, ClueWeb, Factify are all open source, available databases that can be in-
-    corporated into the project for evidence retrieval and truth verification \cite{afc_survey}. The creativity comes with
-    how to use the results of retrieval. Some models have done binary classification, others have imple-
-    mented biased algorithms based on the origination source, others have created knowledge graphs
+    challenges involved with preprocessing as that appears to be the most consistent hurdle, and consistent reliable databases to pull from rather than requiring a web crawler. Datasets such as FEVER,
+    Wikidata, Claimbuster, ClueWeb, Factify are all open source, available databases that can be incorporated into the project for evidence retrieval and truth verification \cite{afc_survey}. The creativity comes with
+    how to use the results of retrieval. Some models have done binary classification, others have implemented biased algorithms based on the origination source, others have created knowledge graphs
     for path traversal and ranking to determine the likelihood of truthfulness. \\
 
     Models used in the literature include ML algorithms in conjunction with NLP techniques such as
@@ -269,7 +266,7 @@
 
 \design{
 
-    The test data used for evaluation is the FEVER dataset. This consists of 185,445 claims, 145,449 of which are labeled as "SUPPORTS", 19,998 labeled as "REFUTES", and 19,998 labeled as "NOT ENOUGH INFO". Each claim is associated with a set of evidence sentences from Wikipedia that support or refute the claim. Indepdently, Wikipedia was pulled from an online distribution (English only), and was embedded with a select number of embeddings from Hugging Face. It is worth noting these embeddings do not neccesarily reflect the best possible embedding selection, however, were chosen due to simplicity for experimentation and code development. The dataset is designed to evaluate the accuracy, precision, recall, and F1 scores on the processes abilities to determine a claims, extract and embed them, and retrieve relevant evidence to make accurate predictions. \\
+    The test data used for evaluation is the FEVER dataset. This consists of 185,445 claims, 145,449 of which are labeled as "SUPPORTS", 19,998 labeled as "REFUTES", and 19,998 labeled as "NOT ENOUGH INFO". Each claim is associated with a set of evidence sentences from Wikipedia that support or refute the claim. Independently, Wikipedia was pulled from an online distribution (English only), and was embedded with a select number of embeddings from Hugging Face. It is worth noting these embeddings do not necessarily reflect the best possible embedding selection, however, were chosen due to simplicity for experimentation and code development. The dataset is designed to evaluate the accuracy, precision, recall, and F1 scores on the processes abilities to determine a claims, extract and embed them, and retrieve relevant evidence to make accurate predictions. \\
 
     The following are references to the datasets and models used in this project: \\
 
@@ -287,19 +284,52 @@
 
 }{
     
-    There are several metrics used to evaluate the performance of the system. The primary metric is accuracy, which measures the proportion of correctly classified claims. Additionally, precision, recall, and F1 score are used to evaluate the performance of the system in more detail. Precision measures the proportion of true positives among all positive predictions, while recall measures the proportion of true positives among all actual positives. The F1 score is the harmonic mean of precision and recall, providing a single metric that balances both. These metrics are calculated for each class (SUPPORTS, REFUTES, NOT ENOUGH INFO) to provide a comprehensive evaluation of the system's performance across different types of claims. It is also important to be able to differentiate between text that contains a claim and text that does not. This is captured by introducing text from the natrual language toolkit's Brown library consisting of just text from novels - stories. These are classified as texts without claims. So, on top of evidence retrieval, there are also cases where the system must be able to differentiate without evidence correctly. \\
+    There are several metrics used to evaluate the performance of the system. The primary metric is accuracy, which measures the proportion of correctly classified claims. Additionally, precision, recall, and F1 score are used to evaluate the performance of the system in more detail. Precision measures the proportion of true positives among all positive predictions, while recall measures the proportion of true positives among all actual positives. The F1 score is the harmonic mean of precision and recall, providing a single metric that balances both. These metrics are calculated for each class (SUPPORTS, REFUTES, NOT ENOUGH INFO) to provide a comprehensive evaluation of the system's performance across different types of claims. It is also important to be able to differentiate between text that contains a claim and text that does not. This is captured by introducing text from the natural language toolkit's Brown library consisting of just text from novels - stories. These are classified as texts without claims. So, on top of evidence retrieval, there are also cases where the system must be able to differentiate without evidence correctly. \\
 }{
-    Compute and report the majority class baseline or other simple baseline.\\
+
+    From basic testing initially with a rules-based process, the FEVER dataset yielded a claim detection accuracy of 63.4\%, a precision of 80.6\%, and a recall of 35.5\%. This process was barebone and let a lot of claims through when it should not have; hence the high precision, but low recall. This can be seen through the confusion matrix in the figure below.
+
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.8\textwidth]{images/dev_confusion_matrix.png} 
+        \caption{Confusion matrix for inital claim detection process.}
+        \label{fig:dev_confusion_matrix}
+    \end{figure}
+
+
 }
 
 \results{ 
-    Describe the published baseline you implemented (include citation and performance). Describe each extension you tried (1-2 paragraphs per extension, including performance comparison). \\
+
+    Increasing performance is based partially on the increased performance of embedding models whiich were in part selected based on their MTEB ranking \cite{mteb}. A lot of effort was put into making the rules appraoch more balanced. This is exemplified by looking at the figure below, showing a more recent representation of the claim detection process. 
+
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.8\textwidth]{images/prod_confusion_matrix.png} 
+        \caption{Confusion matrix for inital claim detection process.}
+        \label{fig:prod_confusion_matrix}
+    \end{figure}
+
 }{
-    Perform an error analysis for your best-performing system (show examples, categorize errors). \\
+    
+    The testing harnesses for this system are heavily focused on claim detection and classification. For the error analysis here, it is simple enough to demonstrate the expectation versus the reality of an example. When testing the claim detection process, a block of text is generated with (at random) 0, 1, or 2 claims in a mix of 5 sentences - in any order. This text is then passed into the system and each statement is classified as a claim (e.g., 0) or not a claim (e.g., 1). This forms the basis for the rule-based claim detection. More advanced methods include segmentation of clauses in case a single sentence includes multiple claims and ideally, would include coreference for NER across sentences. However, for a simple example a block of text input to the system could be: \\
+
+    However , it seems axiomatic that the government has an obligation  to exercise its mandate reasonably , equitably and with full regard for the disruptions which it inevitably causes '' . I told him no , that I had had a very happy childhood . And after I brought them sandwiches and coffee I had to go back to my place in the kitchen and wait . The only cardinal sin which may be committed in warming a wine is to force it by putting it next to the stove or in front of an open fire . John McEnroe had rivalries with other tennis players in the 1980's. Phil rubbed his forehead wearily . Rock music originated in the southern United States. \\
+
+    The intended claims include: \\
+
+    John McEnroe had rivalries with other tennis players in the 1980's. \\
+    Rock music originated in the southern United States. \\
+
+    As the detection system scans the sentences, applies the procesess and subprocesess, it will generate a Claim object for each claim that is detects as factual and surpasses a threshold. The output of this process would be N objects reflecting the (hopefully) N claims within the text. To determine the metrics, each sentence here would be assigned a 0, or 1, as mentioned earlier depending on if it is known to be a claim. If the system is doing well as detecting claims, these predictions will agree with the labels. This generates the confusion matrix you saw previously. \\
+
+    A very similar process occurs for the higher level classiciation of whether the Claim(s) detected are true, false, or not enough information. The reason for not diving into those results is that the density of the Wikipedia database used is not significant enough to reliably determine the verdict. Given an embedding, if the size of the database does not encompass the content of the embedded query (the claim), then it can artifically yield negative results. \\
+
 }
 
 \conclusion{
-    Summarize your accomplishments and how your implementations performed compared to state-of-the-art. \\
+
+    Much of this project relies on series of pipeline processes working together. This project is a toy version of a very scalable, very applicable solution across many audiences. The efforts put forth here illustrate the influence and significance of the various features within the system such as the important of text cleaning and claim detection, the inherent errors associated with rule-based approaches, and the set of thresholds that enable a more dialed in process as a whole. To bring this system up to state of the art, LLM integration for claim detection, claim extraction, and query generation would be optimal. The rules-based approach, although very fast, is error prone. Another implementation that would increase the value of this project is the database used. Only a fraction of Wikipedia was actually used due to computation limitations, however, with the power of the right embedding alongside a comprehensive database (even RAG) this system is capable of generating significant value. \\
 }
 
 
@@ -307,3 +337,4 @@
 
 
 \end{document}
+

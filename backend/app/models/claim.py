@@ -18,4 +18,8 @@ class Claim(BaseModel):
     type: str
     confidence: float
     components: ClaimComponent
-    searches: List[str]
+    queries: List[str]
+    start_sentence_idx: Optional[int] = None
+    end_sentence_idx: Optional[int] = None
+    clause_index: Optional[int] = None
+    context_text: Optional[str] = None

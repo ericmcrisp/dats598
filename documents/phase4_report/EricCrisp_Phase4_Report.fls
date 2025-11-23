@@ -295,6 +295,12 @@ INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmex10.tfm
 INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
 INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmr10.tfm
+INPUT ./images/dev_confusion_matrix.png
+INPUT ./images/dev_confusion_matrix.png
+INPUT ./images/dev_confusion_matrix.png
+INPUT ./images/prod_confusion_matrix.png
+INPUT ./images/prod_confusion_matrix.png
+INPUT ./images/prod_confusion_matrix.png
 INPUT ./EricCrisp_Phase4_Report.bbl
 INPUT ./EricCrisp_Phase4_Report.bbl
 INPUT EricCrisp_Phase4_Report.bbl

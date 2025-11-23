@@ -10,7 +10,7 @@ function App() {
   const [showRaw, setShowRaw] = useState(false);
 
   const [config, setConfig] = useState({
-    embedding_model_name: 'all-MiniLM-L6-v2',
+    embedding_model_common_name: 'mini-L6',
     claim_confidence_threshold: 0.6,
     evidence_top_k: 5,
     evidence_min_similarity: 0.3,
@@ -148,9 +148,12 @@ function App() {
                   onChange={handleConfigChange}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="all-MiniLM-L6-v2">all-MiniLM-L6-v2</option>
-                  <option value="multi-qa-MiniLM-L6-cos-v1">multi-qa-MiniLM-L6-cos-v1</option>
-                  <option value="all-mpnet-base-v2">all-mpnet-base-v2</option>
+                  <option value="mini_L6">all-MiniLM-L6-v2</option>
+                  <option value="mini_L12">all-MiniLM-L12-v2</option>
+                  <option value="paraphase_L6">paraphrase-MiniLM-L6-v2</option>
+                  <option value="Gemma3">tencent/KaLM-Embedding-Gemma3-12B-2511</option>
+                  <option value="e5small">intfloat/e5-small-v2</option>
+
                 </select>
               </div>
 
@@ -227,6 +230,19 @@ function App() {
                 >
                   <option value="rules">Rules-Based</option>
                   <option value="llm">LLM-Based (GPT)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-medium mb-2 text-gray-700">Pipeline Mode</label>
+                <select
+                  name="claim_mode"
+                  value={config.claim_mode}
+                  onChange={handleConfigChange}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="simple">Simplistic Claim Detection</option>
+                  <option value="advanced">More Advanced Claim Detection</option>
                 </select>
               </div>
 

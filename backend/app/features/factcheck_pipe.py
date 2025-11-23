@@ -11,6 +11,8 @@ from app.models.factcheck import FactCheckResponse
 # features
 from app.features.claim_detection import ClaimDetector
 from app.features.claim_extraction import ClaimExtractor
+from app.features.claim_segmentation import ClaimSegmentator
+# from app.features.coreference import CoreferenceResolver
 from app.features.text_preprocessing import TextPreprocessor
 from app.features.evidence_retrieval import EvidenceRetriever
 from app.features.fact_verification import FactVerifier
@@ -31,6 +33,8 @@ class FactCheckPipe:
         # self.extractor = LLMClaimAnalysis()
         self.preprocessor = TextPreprocessor(self.cfg)
         self.nlp = self.preprocessor.nlp
+        self.segmentator = ClaimSegmentator(self.cfg, nlp=self.nlp)
+        # self.coref = CoreferenceResolver(nlp=self.nlp)
         self.detector = ClaimDetector(self.cfg, nlp=self.nlp)
         self.extractor = ClaimExtractor(self.cfg, nlp=self.nlp)
         self.evidence = EvidenceRetriever(self.cfg)
@@ -39,6 +43,7 @@ class FactCheckPipe:
         self.original_text = None
         self.cleaned_text = None
         self.sentences = None
+        self.segments = None
         self.detected_claims = None
         self.claims_with_evidence = None
         self.verification_results = None
@@ -50,36 +55,70 @@ class FactCheckPipe:
         self.cleaned_text = self.preprocessor.clean_text(text)
         return self.cleaned_text
 
-    # step 2: split into sentences
+    # step 2a: split into sentences
     def segment_sentences(self, text=None):
         text = text or self.cleaned_text
         self.sentences = self.preprocessor.segment_sentences(text)
         return self.sentences
 
+    # step 2b: segment sentences into claims
+    def segment_claims(self, sentences=None):
+        self.segment_sentences()
+        self.segments = self.segmentator.segment(self.sentences)
+        return self.segments
+
     # step 3, 4, 5: detect claims
     def detect_claims(self, sentences=None):
-        sentences = sentences or self.sentences
-        self.detected_claims = []
-        # might need to refactor this because what if a claim spans multiple sentences
-        for sentence in sentences:
-            #   bool,      float,        str
-            is_claim, confidence, claim_type = self.detector.is_factual_claim(sentence)
-            # if a claim: 
-            if is_claim and confidence > self.detector.claim_threshold:
-                # step 4: extract claim components
-                components = self.extractor.extract_claim_components(sentence)
-                # step 5: generate search queries
-                search_queries = self.extractor.generate_search_queries(components)
+        if sentences is None:
+            sentences = self.segment_sentences()
 
-                self.detected_claims.append(
-                    Claim(
-                        text=sentence,
-                        confidence=confidence,
-                        type=claim_type,
-                        components=components,
-                        search_queries=search_queries
+        self.detected_claims = []
+
+        # simple: treat each sentence as a candidate claim
+        if self.cfg.CLAIM_MODE == 'simple':
+            for sent_idx, sentence in enumerate(sentences):
+                is_claim, confidence, claim_type = self.detector.is_factual_claim(sentence)
+                if is_claim and confidence > self.detector.claim_threshold:
+                    components = self.extractor.extract_claim_components(sentence)
+                    queries = self.extractor.generate_search_queries(components)
+                    self.detected_claims.append(
+                        Claim(
+                            text=sentence,
+                            confidence=confidence,
+                            type=claim_type,
+                            components=components,
+                            queries=queries,
+                            start_sentence_idx=sent_idx,
+                            end_sentence_idx=sent_idx,
+                            clause_index=0,
+                            context_text=self.cleaned_text
+                        )
                     )
-                )
+        # advanced: treat each sentence as if it could contain multiple claims with context
+        elif self.cfg.CLAIM_MODE == 'advanced':
+            segmentator = ClaimSegmentator(cfg=self.cfg, nlp=self.nlp)
+            claim_units = segmentator.segment(sentences)
+
+            for cu in claim_units:
+                is_claim, confidence, claim_type = self.detector.is_factual_claim(cu['text'])
+                if is_claim and confidence > self.detector.claim_threshold:
+                    components = self.extractor.extract_claim_components(cu['text'])
+                    queries = self.extractor.generate_search_queries(components)
+                    self.detected_claims.append(
+                        Claim(
+                            text=cu['text'],
+                            confidence=confidence,
+                            type=claim_type,
+                            components=components,
+                            queries=queries,
+                            start_sentence_idx=cu['start_sentence_idx'],
+                            end_sentence_idx=cu['end_sentence_idx'],
+                            clause_index=cu['clause_index'],
+                            context_text=self.cleaned_text
+                        )
+                    )
+        else:
+            raise ValueError(f"Unknown CLAIM_MODE: {self.cfg.CLAIM_MODE}")
         return self.detected_claims
 
     # step 6: retrieve relevant evidence
@@ -105,9 +144,7 @@ class FactCheckPipe:
         self.original_text = text
         # step 1: clean text
         self.clean(self.original_text)
-        # step 2: split into sentences
-        self.segment_sentences()
-        # step 3, 4, 5: detect claims
+        # step 2, 3, 4, 5: detect claims
         self.detect_claims()
         # step 6: encode and embed the claims to find similar documents
         self.retrieve_evidence()

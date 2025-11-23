@@ -1,19 +1,19 @@
 # Fdb version 4
-["bibtex EricCrisp_Phase4_Report"] 1763434250.27002 "EricCrisp_Phase4_Report.aux" "EricCrisp_Phase4_Report.bbl" "EricCrisp_Phase4_Report" 1763434250.8382 0
-  "./references.bib" 1763434249.68749 3263 070c0f4af6485ad311613317f042326c ""
+["bibtex EricCrisp_Phase4_Report"] 1763526771.3754 "EricCrisp_Phase4_Report.aux" "EricCrisp_Phase4_Report.bbl" "EricCrisp_Phase4_Report" 1763526858.19697 0
+  "./references.bib" 1763439475.41665 5138 43f0b4d544f72760d9f0aaa62e9a2d32 ""
   "/usr/local/texlive/2024/texmf-dist/bibtex/bst/base/unsrt.bst" 1292289607 18030 1376b4b231b50c66211e47e42eda2875 ""
-  "EricCrisp_Phase4_Report.aux" 1763434149.15304 1358 7b4377708fdeefa0cbdeefaed3213a24 "xelatex"
+  "EricCrisp_Phase4_Report.aux" 1763526854.03299 1903 63752449dae4e698246ed46f058c0206 "xelatex"
   (generated)
   "EricCrisp_Phase4_Report.bbl"
   "EricCrisp_Phase4_Report.blg"
   (rewritten before read)
-["xdvipdfmx"] 1763434150.39034 "EricCrisp_Phase4_Report.xdv" "EricCrisp_Phase4_Report.pdf" "EricCrisp_Phase4_Report" 1763434250.84302 0
-  "EricCrisp_Phase4_Report.xdv" 1763434149.15515 127504 929d4bc93188926ebd5eadcd4e02b113 "xelatex"
+["xdvipdfmx"] 1763526855.504 "EricCrisp_Phase4_Report.xdv" "EricCrisp_Phase4_Report.pdf" "EricCrisp_Phase4_Report" 1763526858.20272 0
+  "EricCrisp_Phase4_Report.xdv" 1763526854.03503 183808 910ff84e45d7109b30efc12c64e783e5 "xelatex"
   (generated)
   "EricCrisp_Phase4_Report.pdf"
   (rewritten before read)
-["xelatex"] 1763434142.38361 "/Users/admin/Documents/graduate/penn/courses/dats598/documents/phase4_report/EricCrisp_Phase4_Report.tex" "EricCrisp_Phase4_Report.xdv" "EricCrisp_Phase4_Report" 1763434250.83836 0
-  "/Users/admin/Documents/graduate/penn/courses/dats598/documents/phase4_report/EricCrisp_Phase4_Report.tex" 1763434139.39321 16076 0de79dbfe0a48648156428dd6167aac6 ""
+["xelatex"] 1763526847.34971 "/Users/admin/Documents/graduate/penn/courses/dats598/documents/phase4_report/EricCrisp_Phase4_Report.tex" "EricCrisp_Phase4_Report.xdv" "EricCrisp_Phase4_Report" 1763526858.1972 0
+  "/Users/admin/Documents/graduate/penn/courses/dats598/documents/phase4_report/EricCrisp_Phase4_Report.tex" 1763526846.53672 20488 1b8cc586c47afdbd61f83565b6cee1af ""
   "/usr/local/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/adobe/zapfding/pzdr.tfm" 1136768653 1528 f853c4d1b4e0550255e02831fdc8496f ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
@@ -156,11 +156,13 @@
   "/usr/local/texlive/2024/texmf-dist/web2c/texmf.cnf" 1727217670 42021 a58d36c7ede3d2fc9f93da62d691ddff ""
   "/usr/local/texlive/2024/texmf-var/web2c/xetex/xelatex.fmt" 1736185086 5883722 2cd2b542864c1704a837f37698c44e1f ""
   "/usr/local/texlive/2024/texmf.cnf" 1710266656 577 e590dabc9e28c5b61546e15f63eebcdf ""
-  "EricCrisp_Phase4_Report.aux" 1763434149.15304 1358 7b4377708fdeefa0cbdeefaed3213a24 "xelatex"
-  "EricCrisp_Phase4_Report.bbl" 1763434250.8277 996 5b5b505f4bad9c63fbf65a532be33728 "bibtex EricCrisp_Phase4_Report"
-  "EricCrisp_Phase4_Report.out" 1763434149.15445 704 8b750ff2feacefa6c8e6245060c3580d "xelatex"
-  "EricCrisp_Phase4_Report.tex" 1763434139.39321 16076 0de79dbfe0a48648156428dd6167aac6 ""
-  "EricCrisp_Phase4_Report.toc" 1763434149.15503 339 9491fbcc973da09b812cd94d4c7375c9 "xelatex"
+  "EricCrisp_Phase4_Report.aux" 1763526854.03299 1903 63752449dae4e698246ed46f058c0206 "xelatex"
+  "EricCrisp_Phase4_Report.bbl" 1763526771.85384 2598 6754e1a8547d2d1af8f1fc633c26d475 "bibtex EricCrisp_Phase4_Report"
+  "EricCrisp_Phase4_Report.out" 1763526854.03437 705 f9244a3073abfc6f47c9f54f54d8ab2f "xelatex"
+  "EricCrisp_Phase4_Report.tex" 1763526846.53672 20488 1b8cc586c47afdbd61f83565b6cee1af ""
+  "EricCrisp_Phase4_Report.toc" 1763526854.03492 340 6969fce1fa0e72af6d4ec7563eab42c2 "xelatex"
+  "images/dev_confusion_matrix.png" 1763525333.55299 20638 6c2c22890e8b64f68a197b05283685cb ""
+  "images/prod_confusion_matrix.png" 1763525970.70998 21002 7d4b19a2c4a4f93ded2e2497c0394c92 ""
   (generated)
   "EricCrisp_Phase4_Report.aux"
   "EricCrisp_Phase4_Report.log"

@@ -11,11 +11,11 @@ from app.core.config import settings
 class EvidenceRetriever:
     def __init__(self, cfg=None):
         self.cfg = cfg or settings
-        self.vector_db = FaissVecDB()
+        self.vector_db = FaissVecDB(self.cfg)
         self.vector_db.load(self.cfg.FAISS_INDEX_PATH)
         self.top_k_queries = self.cfg.EVIDENCE_TOP_K
 
-    # er for a single claim.
+    # er for a single claim
     def retrieve_evidence_for_claim(self, claim: Claim,
                                     top_k: float = None,
                                     min_similarity: float = None) -> List[Evidence]:
@@ -25,7 +25,7 @@ class EvidenceRetriever:
         min_similarity = min_similarity or self.cfg.EVIDENCE_MIN_SIMILARITY
         # pull out the original claim text
         claim_text = claim.text
-        search_queries = claim.searches if claim.searches else claim_text
+        search_queries = claim.queries if claim.queries else claim_text
         # collect evidence from multiple queries
         all_evidence = []
         seen_texts = set()
@@ -33,7 +33,6 @@ class EvidenceRetriever:
         n = min(len(search_queries), self.top_k_queries)
         for query in search_queries[:n]:
             results = self.vector_db.search(query, top_k=top_k)
-
             # only process similar results - pretty sure this is done in the evidence gathering
             for result in results:
                 # Skip if similarity too low

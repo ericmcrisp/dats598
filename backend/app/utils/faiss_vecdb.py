@@ -1,7 +1,8 @@
 """
 create the faiss vector database
 """
-
+import os
+import multiprocessing
 import faiss
 import pickle
 from sentence_transformers import SentenceTransformer
@@ -16,10 +17,17 @@ class FaissVecDB:
         self.documents = []
         self.metadata = []
         self.top_k = self.cfg.EVIDENCE_TOP_K
+        self.index_path = self.cfg.FAISS_INDEX_PATH
+        self.show_p_bar = False
 
     def add_documents(self, documents: list, metadata: list):
-        # encode doc
-        embeddings = self.encoder.encode(documents, show_progress_bar=True)
+        # encode doc 
+        # n_workers = max(1, os.cpu_count() // 2)
+        # target_devices = ["cpu"] * n_workers
+        # pool = self.encoder.start_multi_process_pool(target_devices)
+        embeddings = self.encoder.encode(documents,
+                                         show_progress_bar=self.show_p_bar,
+                                         convert_to_numpy=True)
         # normalize for cosine similarity
         faiss.normalize_L2(embeddings)
         self.index.add(embeddings)
@@ -45,12 +53,14 @@ class FaissVecDB:
                 })
         return results
 
-    def save(self, path: str = 'faiss_index'):
+    def save(self, path: str = None):
+        path = path or self.index_path
         faiss.write_index(self.index, f"{path}.index")
         with open(f"{path}_docs.pkl", 'wb') as f:
             pickle.dump({'documents': self.documents, 'metadata': self.metadata}, f)
 
-    def load(self, path: str = 'faiss_index'):
+    def load(self, path: str = None):
+        path = path or self.index_path
         self.index = faiss.read_index(f"{path}.index")
         with open(f"{path}_docs.pkl", 'rb') as f:
             data = pickle.load(f)
