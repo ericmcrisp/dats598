@@ -215,4 +215,3 @@ class FactCheckPipe:
             summary=summary,
             config=self.cfg.model_dump()
         )
-

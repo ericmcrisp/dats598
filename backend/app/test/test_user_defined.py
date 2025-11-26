@@ -354,36 +354,36 @@ def main():
     #     print("Error confirming embedding models.")
     # return
     # load the datasets needed for testing
-    fever_configs = ['v1.0', 'v2.0', 'wiki_pages']
-    fever = load_dataset("fever", fever_configs[0], cache_dir="data/hf_cache")
-    # dataset = concatenate_datasets([fever['train'], fever['dev'], fever['test']])
-    # choose number of samples to use in testing
-    LIMIT = min(50, len(fever['train']))
-    training_set = fever['train'].shuffle(seed=42)[:LIMIT]
-    # print(training_set.keys())
-    train_claims = training_set['claim']
-    train_evidence = training_set['evidence_id']
-    train_labels = list(training_set['label'])
-    brown_sents = brown.sents()
-    brown_texts = [' '.join(sent) for sent in brown_sents]
-    dataset_info = {'fever_claims': train_claims,
-                    'fever_labels': train_labels,
-                    'fever_evid_id': train_evidence,
-                    'fever_train': training_set,
-                    'brown_sents': brown_sents,
-                    'brown_texts': brown_texts}
-    # analyze the process and subprocesses for each embedding
-    for model in embedding_models.keys():
-        print(f"Testing with embedding model: {model}")
-        cfg = user_defined(model_common_name=model,
-                           claim_mode='advanced')
-        print(f"Vector database is located at: {cfg.VECTOR_DB_DIR}")
-        pipe = FactCheckPipe(cfg=cfg)
-        data = [dataset_info, 3]
-        test_process(pipe, data, "results/prod")
+    # fever_configs = ['v1.0', 'v2.0', 'wiki_pages']
+    # fever = load_dataset("fever", fever_configs[0], cache_dir="data/hf_cache")
+    # # dataset = concatenate_datasets([fever['train'], fever['dev'], fever['test']])
+    # # choose number of samples to use in testing
+    # LIMIT = min(50, len(fever['train']))
+    # training_set = fever['train'].shuffle(seed=42)[:LIMIT]
+    # # print(training_set.keys())
+    # train_claims = training_set['claim']
+    # train_evidence = training_set['evidence_id']
+    # train_labels = list(training_set['label'])
+    # brown_sents = brown.sents()
+    # brown_texts = [' '.join(sent) for sent in brown_sents]
+    # dataset_info = {'fever_claims': train_claims,
+    #                 'fever_labels': train_labels,
+    #                 'fever_evid_id': train_evidence,
+    #                 'fever_train': training_set,
+    #                 'brown_sents': brown_sents,
+    #                 'brown_texts': brown_texts}
+    # # analyze the process and subprocesses for each embedding
+    # for model in embedding_models.keys():
+    #     print(f"Testing with embedding model: {model}")
+    #     cfg = user_defined(model_common_name=model,
+    #                        claim_mode='advanced')
+    #     print(f"Vector database is located at: {cfg.VECTOR_DB_DIR}")
+    #     pipe = FactCheckPipe(cfg=cfg)
+    #     data = [dataset_info, 3]
+    #     test_process(pipe, data, "results/prod")
         # test_user_def_evidence_retrieval(pipe, data, "results/prod/evidence_retrieval")
         # test_user_def_verification(pipe, data, "results/prod/verification")
-
+    
 
 if __name__ == "__main__":
     multiprocessing.set_start_method("spawn", force=True)

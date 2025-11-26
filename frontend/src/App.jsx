@@ -9,18 +9,19 @@ function App() {
   const [showConfig, setShowConfig] = useState(false);
   const [showRaw, setShowRaw] = useState(false);
 
+  // FIXED: Added claim_mode and fixed embedding_model field name
   const [config, setConfig] = useState({
-    embedding_model_common_name: 'mini-L6',
+    embedding_model_common_name: 'mini_L6',
     claim_confidence_threshold: 0.6,
     evidence_top_k: 5,
     evidence_min_similarity: 0.3,
     supports_threshold: 0.5,
-    mode: 'rules'
+    mode: 'rules',
+    claim_mode: 'simple'  // ADDED: Missing field
   });
 
-  // Effect to clear success message after a delay
   const clearSuccessMessage = () => {
-    setTimeout(() => setSuccessMessage(null), 3000); // Clear after 3 seconds
+    setTimeout(() => setSuccessMessage(null), 3000);
   };
 
   const handleConfigChange = (e) => {
@@ -57,7 +58,6 @@ function App() {
       }
 
       await res.json();
-      // Replacing alert() with state-driven UI message
       setSuccessMessage('Configuration saved successfully!');
       clearSuccessMessage();
 
@@ -110,7 +110,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-indigo-200 backdrop-blur-sm flex items-center justify-center py-8">
-      <div className="max-w-5xl mx-full px-6">
+      <div className="max-w-5xl mx-auto px-6 w-full">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-5xl font-bold text-gray-800 mb-2">FactCheck AI</h1>
@@ -140,11 +140,12 @@ function App() {
             <h3 className="text-xl font-semibold mb-4 text-gray-800">Configuration</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* FIXED: Changed name to match state */}
               <div>
                 <label className="block font-medium mb-2 text-gray-700">Embedding Model</label>
                 <select
-                  name="embedding_model_name"
-                  value={config.embedding_model_name}
+                  name="embedding_model_common_name"
+                  value={config.embedding_model_common_name}
                   onChange={handleConfigChange}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
@@ -153,7 +154,6 @@ function App() {
                   <option value="paraphase_L6">paraphrase-MiniLM-L6-v2</option>
                   <option value="Gemma3">tencent/KaLM-Embedding-Gemma3-12B-2511</option>
                   <option value="e5small">intfloat/e5-small-v2</option>
-
                 </select>
               </div>
 
@@ -221,7 +221,7 @@ function App() {
               </div>
 
               <div>
-                <label className="block font-medium mb-2 text-gray-700">Pipeline Mode</label>
+                <label className="block font-medium mb-2 text-gray-700">Verification Mode</label>
                 <select
                   name="mode"
                   value={config.mode}
@@ -234,18 +234,17 @@ function App() {
               </div>
 
               <div>
-                <label className="block font-medium mb-2 text-gray-700">Pipeline Mode</label>
+                <label className="block font-medium mb-2 text-gray-700">Claim Detection Mode</label>
                 <select
                   name="claim_mode"
                   value={config.claim_mode}
                   onChange={handleConfigChange}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="simple">Simplistic Claim Detection</option>
-                  <option value="advanced">More Advanced Claim Detection</option>
+                  <option value="simple">Simple</option>
+                  <option value="advanced">Advanced</option>
                 </select>
               </div>
-
             </div>
 
             <button 
@@ -309,7 +308,7 @@ function App() {
                   <div className="space-y-4">
                     {factCheckResult.claims.map((verification, idx) => {
                       const claim = verification.claim || {};
-                      const verdict = verification.verdict || 'UNKNOWN';
+                      const verdict = verification.verdict || verification.label || 'UNKNOWN';
                       
                       return (
                         <div 
@@ -323,7 +322,7 @@ function App() {
                             </div>
                             <div className="flex-1">
                               <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                                {claim.text || 'No claim text'}
+                                {claim.text || verification.text || 'No claim text'}
                               </h3>
                               <div className="flex flex-wrap gap-2">
                                 <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getVerdictColor(verdict)}`}>
@@ -356,9 +355,25 @@ function App() {
                             <div className="mb-4 p-4 bg-green-50 rounded-lg border border-green-200">
                               <h4 className="font-semibold text-green-800 mb-2">⭐ Best Evidence</h4>
                               <p className="text-gray-700 mb-2">{verification.best_evidence.text}</p>
-                              <p className="text-sm text-green-600">
-                                Source: {verification.best_evidence.source || 'Unknown'}
-                              </p>
+                              <div className="text-sm text-green-600">
+                                <span className="font-medium">Source: </span>
+                                {verification.best_evidence.source?.title || 'Unknown'}
+                                {verification.best_evidence.source?.url && (
+                                  <a 
+                                    href={verification.best_evidence.source.url} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="ml-2 underline hover:text-green-700"
+                                  >
+                                    🔗 Link
+                                  </a>
+                                )}
+                              </div>
+                              {verification.best_evidence.similarity !== undefined && (
+                                <p className="text-sm text-green-600 mt-1">
+                                  Similarity: {(verification.best_evidence.similarity * 100).toFixed(1)}%
+                                </p>
+                              )}
                             </div>
                           )}
 
@@ -371,11 +386,33 @@ function App() {
                               <div className="space-y-2">
                                 {verification.all_evidence.map((ev, i) => (
                                   <div key={i} className="p-3 bg-white rounded border border-blue-100">
-                                    <p className="text-gray-700 text-sm mb-1">{ev.text}</p>
-                                    <p className="text-xs text-blue-600">
-                                      {ev.source || 'Unknown source'}
-                                      {ev.similarity !== undefined && ` • Similarity: ${(ev.similarity * 100).toFixed(0)}%`}
-                                    </p>
+                                    <p className="text-gray-700 text-sm mb-2">{ev.text}</p>
+                                    <div className="flex flex-wrap items-center gap-2 text-xs text-blue-600">
+                                      <span className="font-medium">
+                                        {ev.source?.title || 'Unknown source'}
+                                      </span>
+                                      {ev.source?.type && (
+                                        <span className="px-2 py-0.5 bg-blue-100 rounded">
+                                          {ev.source.type}
+                                        </span>
+                                      )}
+                                      {ev.similarity !== undefined && (
+                                        <span>• Similarity: {(ev.similarity * 100).toFixed(0)}%</span>
+                                      )}
+                                      {ev.rank !== undefined && (
+                                        <span>• Rank: #{ev.rank}</span>
+                                      )}
+                                      {ev.source?.url && (
+                                        <a 
+                                          href={ev.source.url} 
+                                          target="_blank" 
+                                          rel="noopener noreferrer"
+                                          className="underline hover:text-blue-700"
+                                        >
+                                          🔗 Link
+                                        </a>
+                                      )}
+                                    </div>
                                   </div>
                                 ))}
                               </div>
