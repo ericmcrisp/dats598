@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Dict, Optional
+from app.models.evidence import Evidence
 
 # this ties into claim extraction
 class ClaimComponent(BaseModel):
@@ -23,3 +24,7 @@ class Claim(BaseModel):
     end_sentence_idx: Optional[int] = None
     clause_index: Optional[int] = None
     context_text: Optional[str] = None
+    evidence: Optional[List[Evidence]] = None
+    verdict: Optional[str] = None
+    explanation: Optional[str] = None
+    evidence_used: Optional[List[Evidence]] = None

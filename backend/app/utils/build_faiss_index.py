@@ -50,6 +50,7 @@ def read_wikiextractor_output(extracted_path: str, max_articles: int = 100):
 def read_wikiextractor_batches(extracted_path: str, batch_size: int = 10000):
     batch = []
     count = 0
+    print(extracted_path)
     for root, dirs, files in os.walk(extracted_path):
         for filename in files:
             if not filename.startswith("wiki"):
@@ -70,7 +71,7 @@ def read_wikiextractor_batches(extracted_path: str, batch_size: int = 10000):
         yield batch
 
 
-def chunk_article(text: str, title: str, chunk_size: int = 500):
+def chunk_article(text: str, title: str, chunk_size: int = 250):
     if not text or not isinstance(text, str):
         return []
 
@@ -106,9 +107,12 @@ def chunk_article(text: str, title: str, chunk_size: int = 500):
 
 def build_index(extracted_path: str, output_path: str, max_articles=None, batch_size=512, cfg=None, overwrite: bool = False):
     print("="*70)
-    print("Building FAISS Index from Wikipedia")
+    print(f'Building FAISS Index from wiki* files to at: {extracted_path}')
     print("="*70)
 
+    parent_dir = os.path.dirname(output_path)
+    if parent_dir and not os.path.exists(parent_dir):
+        os.makedirs(parent_dir, exist_ok=True)
     index_file = f"{output_path}.index"
     docs_file = f"{output_path}_docs.pkl"
     if not overwrite and os.path.exists(index_file) and os.path.exists(docs_file):
@@ -133,12 +137,22 @@ def build_index(extracted_path: str, output_path: str, max_articles=None, batch_
         batch_metadata = []
 
         for article in batch_articles:
-            title = article.get('title', '')
+            title = article.get('title') or article.get('id', '')
             text = article.get('text', '')
+            if not text or not isinstance(text, str) or len(text.strip()) == 0:
+                continue
             article_id = article.get('id', '')
             url = article.get('url', f"https://en.wikipedia.org/wiki/{title.replace(' ', '_')}")
-
-            chunks = chunk_article(text, title)
+            if article.get('lines'):
+                lines = [line.split('\t')[1] for line in article['lines'].split('\n') if line and len(line.split('\t')) > 1 and line.split('\t')[1].strip()]
+                chunks = []
+                for line in lines:
+                    chunks.extend(chunk_article(line, title))
+            else:
+                chunks = chunk_article(text, title)
+            # print(f"Article {title} -> {len(chunks)} chunks")
+            if not chunks:
+                continue
             for i, chunk in enumerate(chunks):
                 batch_chunks.append(chunk)
                 batch_metadata.append({
@@ -161,6 +175,9 @@ def build_index(extracted_path: str, output_path: str, max_articles=None, batch_
         if max_articles and total_articles >= max_articles:
             print(f"Reached max_articles={max_articles}. Stopping.")
             break
+    # make sure documents == length of index:
+    if vector_db.index.ntotal != len(vector_db.documents):
+        raise RuntimeError("Mismatch between FAISS index and stored documents")
 
     # save vector db
     print(f"\nSaving FAISS index to {output_path}...")

@@ -13,6 +13,8 @@ class EvidenceRetriever:
         self.cfg = cfg or settings
         self.vector_db = FaissVecDB(self.cfg)
         self.vector_db.load(self.cfg.FAISS_INDEX_PATH)
+        if self.vector_db.index.ntotal == 0:
+            raise RuntimeError("FAISS index is empty")
         self.top_k_queries = self.cfg.EVIDENCE_TOP_K
 
     # er for a single claim
@@ -21,7 +23,7 @@ class EvidenceRetriever:
                                     min_similarity: float = None) -> List[Evidence]:
 
         # more configuration parameters
-        top_k = top_k or self.cfg.EVIDENCE_TOP_K
+        top_k = max(0, top_k or self.cfg.EVIDENCE_TOP_K)
         min_similarity = min_similarity or self.cfg.EVIDENCE_MIN_SIMILARITY
         # pull out the original claim text
         claim_text = claim.text
@@ -38,7 +40,6 @@ class EvidenceRetriever:
                 # Skip if similarity too low
                 if result['similarity'] < min_similarity:
                     continue
-
                 # Deduplicate by first 100 chars
                 text_key = result['text'][:100]
                 if text_key not in seen_texts:
@@ -52,23 +53,25 @@ class EvidenceRetriever:
                             title=result['metadata'].get('title', 'Unknown'),
                             url=result['metadata'].get('url', '')
                         ),
-                        relevance_score=result['similarity'],
-                        claim_text=claim_text
+                        similarity=result['similarity'],
+                        rank=-1
                     )
                     all_evidence.append(evidence)
 
         # sort by relevance score
-        all_evidence.sort(key=lambda x: x.relevance_score, reverse=True)
+        all_evidence.sort(key=lambda x: x.similarity, reverse=True)
+        # update rank based on similarity score (max)
+        for i, evidence in enumerate(all_evidence, start=1):
+            evidence.rank = i
 
         return all_evidence[:top_k]
 
     # handle all the claims
-    def retrieve_evidence_for_claims(self, claims: List[Claim]) -> Dict[str, List[Evidence]]:
-        results = {}
+    def retrieve_evidence_for_claims(self, claims: List[Claim]) -> List[Claim]:
         for claim in claims:
-            evidence = self.retrieve_evidence_for_claim(claim)
-            results[claim['text']] = evidence
-        return results
+            evidence_list = self.retrieve_evidence_for_claim(claim)
+            claim.evidence = evidence_list
+        return claims
 
     # summarize stats for claims
     def get_evidence_summary(self, evidence_list: List[Evidence]) -> Dict:
@@ -79,7 +82,7 @@ class EvidenceRetriever:
                 'avg_relevance': 0.0
             }
 
-        avg_relevance = sum(e.relevance_score for e in evidence_list) / len(evidence_list)
+        avg_relevance = sum(e.similarity for e in evidence_list) / len(evidence_list)
         unique_sources = len(set(e.source.title for e in evidence_list))
 
         # what else would be good ...
@@ -89,5 +92,5 @@ class EvidenceRetriever:
             'evidence_count': len(evidence_list),
             'unique_sources': unique_sources,
             'avg_relevance': avg_relevance,
-            'top_relevance': evidence_list[0].relevance_score if evidence_list else 0.0
+            'top_relevance': evidence_list[0].similarity if evidence_list else 0.0
         }

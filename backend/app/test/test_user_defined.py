@@ -6,9 +6,10 @@ from app.core.public_config import PublicConfig
 from app.features.evidence_retrieval import EvidenceRetriever
 from app.utils.configuration_syncing import sync
 from app.utils.build_faiss_index import build_index
+from app.utils.build_resumable_index import build_index_resumable
 
 import random
-from collections import defaultdict
+from collections import defaultdict, Counter
 import nltk
 import json
 from tqdm import tqdm
@@ -19,45 +20,56 @@ import matplotlib.pyplot as plt
 from datasets import load_dataset
 from datasets import concatenate_datasets
 from sentence_transformers import util
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
+from sklearn.utils.multiclass import unique_labels
 from app.core.config import settings
 
 faiss.omp_set_num_threads(min(4, os.cpu_count()))
 
 nltk.download('brown')
 
+# label mapping:
+VERDICT_TO_ID = {
+    "SUPPORTS": 0,
+    "REFUTES": 1,
+    "NOT_ENOUGH_INFO": 2
+}
 
-def sequential_claim_generator(claims, labels):
-    for claim, label in zip(claims, labels):
-        yield claim, label
+ID_TO_VERDICT = {v: k for k, v in VERDICT_TO_ID.items()}
 
 
-def generate_text_blocks(claims, labels, brown_texts, n=5):
-    claim_gen = sequential_claim_generator(claims, labels)
+
+def sequential_claim_generator(claims, labels, evidence):
+    for claim, label, evidence in zip(claims, labels, evidence):
+        yield claim, label, evidence
+
+
+def generate_text_blocks(claims, labels, evidence, brown_texts, n=5):
+    claim_gen = sequential_claim_generator(claims, labels, evidence)
     claim_buffer = []  # to hold a second claim if needed
     while True:
         block = random.sample(brown_texts, n)
         claim_info_list = []
-
-        # Decide randomly: 0, 1, or 2 claims
+        # randomly: 0, 1, or 2 claims
         num_claims = random.choice([0, 1, 2])
-
         for _ in range(num_claims):
-            # Get next claim from buffer or generator
+            # get next claim from generator
             if claim_buffer:
-                claim_text, claim_label = claim_buffer.pop(0)
+                claim_text, claim_label, claim_ids = claim_buffer.pop(0)
             else:
                 try:
-                    claim_text, claim_label = next(claim_gen)
+                    claim_text, claim_label, claim_ids = next(claim_gen)
                 except StopIteration:
-                    # All claims have been used, finish generation
+                    # all claims in set have been used, finish generation
                     if claim_info_list:
                         yield {
                             'text': ' '.join(block),
                             'number_of_claims': len(claim_info_list),
                             'claims': [c['claim'] for c in claim_info_list],
-                            'labels': [c['label'] for c in claim_info_list]
+                            'labels': [c['label'] for c in claim_info_list],
+                            'ids': [c['ids'] for c in claim_info_list]
+
                         }
                     return
 
@@ -66,32 +78,44 @@ def generate_text_blocks(claims, labels, brown_texts, n=5):
             claim_info_list.append({
                 'claim': claim_text,
                 'label': claim_label,
-                'position': insert_idx
+                'position': insert_idx,
+                'ids': claim_ids
             })
 
         yield {
             'text': ' '.join(block),
             'number_of_claims': len(claim_info_list),
             'claims': [c['claim'] for c in claim_info_list],
-            'labels': [c['label'] for c in claim_info_list]
+            'labels': [c['label'] for c in claim_info_list],
+            'ids': [c['ids'] for c in claim_info_list]
         }
 
 
-def test_user_def_claim_detection_and_extraction(pipe, data, resdir):
+def test_process(pipe, data, resdir):
     # unpack inputs
     data_info, number_of_fluff_sentences = data
+    FEVER_ID_TO_VERDICT = {}
+    for i, label in enumerate(set(set(data_info['fever_labels']))):
+        FEVER_ID_TO_VERDICT[label] = i
+    fever_labels = [FEVER_ID_TO_VERDICT[l] for l in data_info['fever_labels']]
     # synthetically generate random text for testing
-    claim_gen = sequential_claim_generator(data_info['fever_claims'], data_info['fever_labels'])
+    claim_gen = sequential_claim_generator(data_info['fever_claims'], fever_labels, data_info['fever_evid_id'])
     block_gen = generate_text_blocks(data_info['fever_claims'],
-                                     data_info['fever_labels'],
+                                     fever_labels,
+                                     data_info['fever_evid_id'],
                                      data_info['brown_texts'])
     # track quantities for metrics
     all_labels = []
     all_preds = []
     all_sents = []
     gold_standard_claims = []
+    gold_standard_ids = []
     generated_queries = []
     detected_claims_lst = []
+    hits, mrrs, sims = [], [], []
+    gold_standard_verdicts = []
+    all_gold_verdicts = []
+    all_pred_verdicts = []
 
     # iterate through blocks
     for block in tqdm(block_gen, desc="Testing claim detection"):
@@ -101,9 +125,11 @@ def test_user_def_claim_detection_and_extraction(pipe, data, resdir):
         print(block['claims'])
         print('-'*50)
         gold_standard_claims.extend(block['claims'])
+        gold_standard_ids.extend(block['ids'])
+        gold_standard_verdicts.extend(block['ids'])
         # apply pipeline to input
         pipe.clean(text)
-        detected_claims = pipe.detect_claims()
+        pipe.detect_claims()
     
         # for s in sentences:
         #     is_claim, confidence, claim_type = pipe.detector.is_factual_claim(s)
@@ -121,25 +147,56 @@ def test_user_def_claim_detection_and_extraction(pipe, data, resdir):
 
         labels = [1 if any(sent == gold for gold in gold_standard_claims) else 0 for sent in pipe.sentences]
         if pipe.cfg.CLAIM_MODE == 'simple':
-            preds = [1 if any(sent == c.text for c in detected_claims) else 0 for sent in pipe.sentences]
+            preds = [1 if any(sent == c.text for c in pipe.detected_claims) else 0 for sent in pipe.sentences]
         else:
             # deprecated because coref was dropped
             # preds = [1 if any(sent in c.resolved_text for c in detected_claims) else 0 for sent in pipe.sentences]
-            preds = [1 if any(sent == c.text for c in detected_claims) else 0 for sent in pipe.sentences]
+            preds = [1 if any(sent == c.text for c in pipe.detected_claims) else 0 for sent in pipe.sentences]
 
         # Collect for overall evaluation
         all_labels.extend(labels)
         all_preds.extend(preds)
         all_sents.extend(pipe.sentences)
 
-        for claim in detected_claims:
+        for claim in pipe.detected_claims:
             original = claim.text
             detected_claims_lst.append(original)
-            if original in gold_standard_claims:
-                if claim.queries:
-                    generated_queries.append(claim.queries[0])
-                else:
-                    generated_queries.append('')
+            generated_queries.append(claim.queries[0])
+        # process the embeddings
+        pipe.retrieve_evidence(pipe.detected_claims)
+        
+        for claim in pipe.claims_with_evidence:
+            evidence_list = claim.evidence
+            retrieved_ids = [e.source.title for e in evidence_list]
+            # recall@K
+            hit = any(g in retrieved_ids for g in gold_standard_ids)
+            hits.append(1 if hit else 0)
+            # mmr
+            ranks = [i+1 for i, r in enumerate(retrieved_ids) if r in gold_standard_ids]
+            mrrs.append(1 / min(ranks) if ranks else 0)
+            # similarity
+            sims.extend([e.similarity for e in evidence_list])
+ 
+        claim_to_gold_idx = []
+        for detected in detected_claims_lst:
+            try:
+                idx = gold_standard_claims.index(detected)
+            except ValueError:
+                idx = None
+            claim_to_gold_idx.append(idx)
+        # analyze the documents found
+        verification_results = pipe.verify_claims(pipe.claims_with_evidence)
+        # post process
+        for v, gold_idx in zip(verification_results, claim_to_gold_idx):
+            if gold_idx is not None:
+                all_gold_verdicts.append(gold_standard_verdicts[gold_idx])
+                all_pred_verdicts.append(FEVER_ID_TO_VERDICT[v.verdict])
+
+        # gather output
+        frontend_output = pipe.build_factcheck_response()
+
+    classification_accuracy = sum([g==p for g, p in zip(all_gold_verdicts, all_pred_verdicts)]) / len(all_gold_verdicts)
+
     # return
     # --- detection evaluation metrics ---
     accuracy = accuracy_score(all_labels, all_preds)
@@ -168,12 +225,19 @@ def test_user_def_claim_detection_and_extraction(pipe, data, resdir):
     if resdir:
         os.makedirs(os.path.join(resdir, 'claim_detection'), exist_ok=True)
         os.makedirs(os.path.join(resdir, 'claim_extraction'), exist_ok=True)
+        os.makedirs(os.path.join(resdir, 'classification'), exist_ok=True)
         metrics = {
-            "accuracy": accuracy,
-            "precision": precision,
-            "recall": recall,
-            "f1": f1,
-            "avg_extraction_similarity": float(avg_sim) if gold_standard_claims else None
+            "accuracy": float(accuracy),
+            "precision": float(precision),
+            "recall": float(recall),
+            "f1": float(f1),
+            "avg_extraction_similarity": float(avg_sim) if gold_standard_claims else None,
+            "median_extraction_similarity": float(np.median(sims)) if gold_standard_claims else None,
+            "recall_at_k": float(np.mean(hits)) if hits else None,
+            "mrr": float(np.mean(mrrs)) if mrrs else None,
+            "avg_evidence_score": float(np.mean(sims)) if len(sims) > 0 else None,
+            "num_gold_claims": int(len(gold_standard_claims)),
+            "num_detected_claims": int(len(detected_claims_lst))
         }
         with open(os.path.join(resdir, 'claim_detection', 'performance_metrics.json'), "w") as f:
             json.dump(metrics, f, indent=2)
@@ -192,119 +256,51 @@ def test_user_def_claim_detection_and_extraction(pipe, data, resdir):
         df_gold_claims.to_csv(os.path.join(resdir, 'claim_extraction', 'gold_claims.csv'), index=False)        
         df_detected_claims.to_csv(os.path.join(resdir, 'claim_extraction', 'detected_claims.csv'), index=False)
 
+        rows = []
+        for claim in pipe.claims_with_evidence:
+            evidences = claim.evidence or []
+            avg_relevance = float(np.mean([e.similarity for e in evidences])) if evidences else 0.0
+            rows.append({
+                "claim": claim.text,
+                "retrieved_evidence_count": len(evidences),
+                "avg_similarity": avg_relevance,
+            })
+        df_evidence = pd.DataFrame(rows)
+        df_evidence.to_csv(os.path.join(resdir, 'claim_extraction', 'prod_evidence_stats.csv'), index=False)
+
         if len(sims) > 0:
             plt.hist(sims, bins=20, color="skyblue", edgecolor="black")
             plt.title("Claim Extraction Similarity Distribution")
             plt.xlabel("Cosine similarity")
             plt.ylabel("Frequency")
             plt.tight_layout()
-            plt.savefig(os.path.join(resdir, "similarity_hist.png"))
+            plt.savefig(os.path.join(resdir, "claim_extraction", "prod_similarity_hist.png"))
             plt.close()
 
-    return pipe
+        sim_stats = {
+            "accuracy": float(accuracy),
+            "precision": float(precision),
+            "recall": float(recall),
+            "f1": float(f1),
+            "avg_extraction_similarity": float(avg_sim) if gold_standard_claims else None
+        }
+        with open(os.path.join(resdir, 'claim_extraction', 'similarity_stats.json'), 'w') as f:
+            json.dump(sim_stats, f, indent=2)
+
+        with open(os.path.join(resdir, 'classification', 'prod_classification_accuracy.json'), "w") as f:
+            json.dump({"classification_accuracy": classification_accuracy}, f, indent=2)
 
 
-# def test_user_def_claim_extraction(pipe, data, resdir):
-#     samples, labels = data
-#     # similarity from query pairs (when query and claim exist)
-#     # coverage of query for claim
-#     # average similarity
-#     # histogram of similarity scores
-#     # % of extracted claims above threshold (e.g., 0.7)
+        # if all_gold_verdicts:
+        #     print("\n=== CLAIM VERIFICATION METRICS ===")
+        #     print(classification_report(all_gold_verdicts, all_pred_verdicts, zero_division=0))
 
-
-#     return pipe
-
-
-def compute_rr(returned, gold):
-    for i, r in enumerate(returned):
-        if r in gold:
-            return 1.0 / (i + 1)
-    return 0.0
-
-
-def get_target_pages(claim):
-    gold = set()
-    for group in claim["evidence"]:
-        for evidence in group:
-            page = evidence[2]
-            gold.add(page.replace(" ", "_"))
-    return gold
-
-
-# def test_user_def_evidence_retrieval(pipe, data, max_claims, resdir):
-#     data_info, number_of_fluff_sentences = data
-#     dataset = data_info['fever_train']
-#     retriever = pipe.evidence
-#     top_k = pipe.cfg.EVIDENCE_TOP_K
-
-#     recalls = []
-#     mrrs = []
-#     rank1_hits = 0
-#     score_stats = []
-
-#     for item in tqdm(dataset, desc="Evaluating evidence retrieval"):
-#         gold_pages = get_target_pages(item)
-
-#         # Use your pipeline to extract claim
-#         pipe.clean(claim_text)
-#         pipe.segment_sentences()
-#         detected = pipe.detect_claims()
-
-#         if not detected:
-#             continue
-
-#         claim = detected[0]  # FEVER claims are single-sentence
-
-#         # Retrieve evidence
-#         evidence_list = retriever.retrieve_evidence_for_claim(claim)
-
-#         # Extract evidence wiki titles returned by FAISS
-#         returned_titles = [ev.source.title.replace(" ", "_") for ev in evidence_list]
-
-#         # ---- Compute metrics ----
-#         # recall@k
-#         hit = any(t in gold_pages for t in returned_titles)
-#         recalls.append(1 if hit else 0)
-
-#         # rank-1 accuracy
-#         if returned_titles and returned_titles[0] in gold_pages:
-#             rank1_hits += 1
-
-#         # MRR (mean reciprocal rank)
-#         rr = compute_rr(returned_titles, gold_pages)
-#         mrrs.append(rr)
-
-#         # score statistics
-#         if evidence_list:
-#             score_stats.append(evidence_list[0].relevance_score)
-
-#         # ---- aggregate metrics ----
-#         results = {
-#             "recall@k": sum(recalls) / len(recalls),
-#             "rank1_accuracy": rank1_hits / len(recalls),
-#             "mrr": sum(mrrs) / len(mrrs),
-#             "avg_top_score": sum(score_stats) / len(score_stats),
-#         }
-
-#         print("\n=== Evidence Retrieval Results ===")
-#         for k, v in results.items():
-#             print(f"{k:20s}: {v:.4f}")
-
-#         # Save results
-#         if resdir:
-#             os.makedirs(resdir, exist_ok=True)
-#             with open(os.path.join(resdir, "evidence_metrics.json"), "w") as f:
-#                 json.dump(results, f, indent=2)
-
-#         return results
-
-
-#     return pipe
-
-
-def test_user_def_verification(pipe, data, resdir):
-    samples, labels = data
+        #     cm = confusion_matrix(all_gold_verdicts, all_pred_verdicts, labels=["SUPPORTS", "REFUTES", "NOT_ENOUGH_INFO"])
+        #     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["SUPPORTS", "REFUTES", "NOT_ENOUGH_INFO"])
+        #     disp.plot(cmap=plt.cm.Blues)
+        #     plt.title("Claim Verification Confusion Matrix")
+        #     plt.savefig(os.path.join(resdir, "classification", "verification_confusion_matrix.png"))
+        #     plt.close()
 
     return pipe
 
@@ -322,20 +318,25 @@ def user_defined(model_common_name: str = "mini_L12",
 
 
 def confirm_embeddings(models):
-    EXTRACTED_PATH = 'data/wikipedia/extracted'
-    MAX_ARTICLES = 1000000
+    EXTRACTED_PATH = os.path.abspath('data/wikipedia/extracted')
+    # EXTRACTED_PATH = os.path.abspath('data/hf_cache/wiki-pages/')
+    MAX_ARTICLES = None
     for name, model_name in models.items():
         user_cfg = user_defined(name)
-        OUTPUT_PATH = f'app/data/vector_db/{name}'
+        OUTPUT_PATH = f'app/data/wiki_page/vector_db/{name}'
         # Create a config override for this model
         print(f"\n=== Building FAISS index for model: {user_cfg.EMBEDDING_MODEL_COMMON_NAME} ===")
         print(user_cfg.FAISS_INDEX_PATH)
-        build_index(EXTRACTED_PATH,
-                    OUTPUT_PATH,
-                    MAX_ARTICLES,
-                    batch_size=2048,
-                    cfg=user_cfg,
-                    overwrite=True)
+        # build_index_resumable(EXTRACTED_PATH,
+        #                       OUTPUT_PATH,
+        #                       MAX_ARTICLES,
+        #                       batch_size=64,
+        #                       cfg=user_cfg,
+        #                       overwrite=True)
+        build_index_resumable(EXTRACTED_PATH,
+                              OUTPUT_PATH,
+                              cfg=user_cfg,
+                              batch_size=64)
     return True
 
 
@@ -344,7 +345,7 @@ def main():
     embedding_models = {'mini_L6': 'all-MiniLM-L6-v2'}
                         # 'e5small': 'intfloat/e5-small-v2',
                         # 'paraphase_L6': 'paraphrase-MiniLM-L6-v2',
-                        # 'mini_L12': 'all-MiniLM-L12-v2'}
+                        # 'mini_L12': 'all-MiniLM-L12-v2',
                         # 'Gemma3': 'tencent/KaLM-Embedding-Gemma3-12B-2511'}
     # make sure each embedding exists
     # if confirm_embeddings(embedding_models):
@@ -359,13 +360,15 @@ def main():
     # choose number of samples to use in testing
     LIMIT = min(50, len(fever['train']))
     training_set = fever['train'].shuffle(seed=42)[:LIMIT]
-    # test_set = split_data['test']
+    # print(training_set.keys())
     train_claims = training_set['claim']
+    train_evidence = training_set['evidence_id']
     train_labels = list(training_set['label'])
     brown_sents = brown.sents()
     brown_texts = [' '.join(sent) for sent in brown_sents]
     dataset_info = {'fever_claims': train_claims,
                     'fever_labels': train_labels,
+                    'fever_evid_id': train_evidence,
                     'fever_train': training_set,
                     'brown_sents': brown_sents,
                     'brown_texts': brown_texts}
@@ -374,11 +377,10 @@ def main():
         print(f"Testing with embedding model: {model}")
         cfg = user_defined(model_common_name=model,
                            claim_mode='advanced')
+        print(f"Vector database is located at: {cfg.VECTOR_DB_DIR}")
         pipe = FactCheckPipe(cfg=cfg)
         data = [dataset_info, 3]
-        test_user_def_claim_detection_and_extraction(pipe, data,
-                                                     "results/prod")
-        break
+        test_process(pipe, data, "results/prod")
         # test_user_def_evidence_retrieval(pipe, data, "results/prod/evidence_retrieval")
         # test_user_def_verification(pipe, data, "results/prod/verification")
 

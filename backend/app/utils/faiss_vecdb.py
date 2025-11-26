@@ -21,7 +21,7 @@ class FaissVecDB:
         self.show_p_bar = False
 
     def add_documents(self, documents: list, metadata: list):
-        # encode doc 
+        # encode doc
         # n_workers = max(1, os.cpu_count() // 2)
         # target_devices = ["cpu"] * n_workers
         # pool = self.encoder.start_multi_process_pool(target_devices)

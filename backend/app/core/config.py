@@ -30,6 +30,7 @@ class Settings(BaseSettings):
     BASE_DIR: Path = Path(__file__).resolve().parent.parent
     DATA_DIR: Path = BASE_DIR / "data"
     VECTOR_DB_DIR: Path = DATA_DIR / "vector_db"
+    # VECTOR_DB_DIR: Path = DATA_DIR / "wiki_page/vector_db"
     EMBEDDING_DB_PATH: Path = DATA_DIR / "embeddings/embeddings.db"
     FAISS_INDEX_PATH: str = str(VECTOR_DB_DIR / EMBEDDING_MODEL_COMMON_NAME)
 

@@ -19,6 +19,7 @@ from app.features.fact_verification import FactVerifier
 # adding in the LLM version of these processes
 # from app.features.llm_claim_analysis import LLMClaimAnalysis
 
+from typing import List, Dict
 # config
 from app.core.config import settings
 
@@ -151,13 +152,9 @@ class FactCheckPipe:
         # step7: verify is evidence confirms or denies
         self.verify_claims()
         # step 8: assess the alignment
-        self.assess()
+        # self.assess()
         # return the results as a structured response
-        return FactCheckResponse(
-            claims=self.verification_results,
-            summary=self.assessment,
-            config=self.cfg.dict()
-        )
+        return self.build_factcheck_response()
 
     def claims_to_dataframe(self, claims=None):
         if claims is None and self.detected_claims is not None:
@@ -174,3 +171,48 @@ class FactCheckPipe:
         # update object state
         self.df = pd.DataFrame(data)
         return self.df
+
+    # helper for gathering data to report to front end
+    def build_summary(self, verifications: List[Verification]) -> Dict:
+        total = len(verifications)
+        supports = sum(1 for v in verifications if v.verdict == "SUPPORTS")
+        refutes = sum(1 for v in verifications if v.verdict == "REFUTES")
+        not_enough = sum(1 for v in verifications if v.verdict == "NOT_ENOUGH_INFO")
+        avg_conf = sum(v.confidence or 0 for v in verifications) / total if total else 0.0
+        return {
+            "total_claims": total,
+            "supports": supports,
+            "refutes": refutes,
+            "not_enough_info": not_enough,
+            "avg_confidence": avg_conf,
+            "accuracy_rate": supports / total if total > 0 else 0.0
+        }
+
+    def serialize_verification(self, v: Verification) -> dict:
+        return {
+            "claim_text": v.claim.text,
+            "verdict": v.verdict,
+            "confidence": v.confidence,
+            "evidence_count": v.evidence_count,
+            "max_similarity": v.max_similarity,
+            "avg_similarity": v.avg_similarity,
+            "best_evidence": v.best_evidence,
+            "all_evidence": [
+                {
+                    "text": e.text,
+                    "source": getattr(e.source, "title", None),
+                    "url": getattr(e.source, "url", None)
+                } for e in (v.all_evidence or [])
+            ],
+            "explanation": v.explanation
+        }
+
+    def build_factcheck_response(self) -> FactCheckResponse:
+        summary = self.build_summary(self.verification_results)
+        # serialized_claims = [self.serialize_verification(v) for v in self.verification_results]
+        return FactCheckResponse(
+            claims=self.verification_results,
+            summary=summary,
+            config=self.cfg.model_dump()
+        )
+

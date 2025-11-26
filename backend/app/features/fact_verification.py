@@ -7,10 +7,9 @@ import spacy
 from typing import List, Dict, Tuple
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
-from app.models.evidence import Evidence
+from app.models.evidence import Evidence, EvidenceSource
 from app.models.claim import Claim
 from app.models.verification import Verification
-from app.features.embeddings import EmbeddingDB
 from app.core.config import settings
 
 
@@ -19,29 +18,33 @@ class FactVerifier:
     def __init__(self, cfg=None, nlp=None):
         self.cfg = cfg or settings
         self.nlp = nlp or spacy.load(self.cfg.SPACY_MODEL)
-        # create caching for model loading
-        # self.embedding_db = EmbeddingDB(cfg=self.cfg)
+        # create caching for model loading 
         self.encoder = SentenceTransformer(self.cfg.EMBEDDING_MODEL_NAME)
         # determine thresholds for verdict determination
         self.SUPPORTS_THRESHOLD = self.cfg.SUPPORTS_THRESHOLD
         self.REFUTES_THRESHOLD = 1 - self.SUPPORTS_THRESHOLD
-        self.evidence_report_limit = 100
+        self.evidence_report_limit = 500
 
     # handle a single claim (the helper function below loops through claims)
     def verify_claim(self, claim: Claim, evidence_list: List[Evidence]) -> Verification:
         if not evidence_list:
             return Verification(
                 claim=claim,
-                evidence_count=len(evidence_list),
-                all_evidence=evidence_list,
-                explanation='No evidence found for this claim.'
+                verdict="NOT_ENOUGH_EVIDENCE",
+                confidence=0.0,
+                evidence_count=0,
+                max_similarity=0.0,
+                avg_similarity=0.0,
+                best_evidence=Evidence(),
+                all_evidence=[],
+                explanation="No evidence retrieved from the knowledge base."
             )
         # grab the claim info
         text = claim.text
         # encode claim
         claim_embedding = self.encoder.encode([text])
         # encode all evidence passages
-        evidence_texts = [x.text for x in evidence_list]
+        evidence_texts = [evidence.text for evidence in evidence_list]
         evidence_embeddings = self.encoder.encode(evidence_texts)
         # calculate similarities
         similarities = cosine_similarity(claim_embedding, evidence_embeddings)[0]
@@ -56,21 +59,11 @@ class FactVerifier:
             verdict = 'SUPPORTS'
             explanation = f"Evidence supports this claim based on similarities (max : {max_similarity:.2f}, avg : {avg_similarity:.2f})"
         elif max_similarity <= self.REFUTES_THRESHOLD:
-            verdict = 'REFUTES' 
+            verdict = 'REFUTES'
             explanation = f"Evidence contradicts this claim based on similarities (max : {max_similarity:.2f}, avg: {avg_similarity:.2f})"
         else:
             verdict = 'NOT_ENOUGH_INFO' 
             explanation = f"Evidence is unclear or insufficient based on similarities (max : {max_similarity:.2f}, avg: {avg_similarity:.2f})"
-        
-        evidence_used = []
-        for i, (evidence, sim) in enumerate(zip(evidence_list, similarities)):
-            evidence_used.append({
-                'text': evidence.text[:self.evidence_report_limit] + '...' if len(evidence.text) > self.evidence_report_limit else evidence.text,
-                'source': evidence.source.title,
-                'url': evidence.source.url,
-                'similarity': float(sim),
-                'rank': i + 1
-            })
 
         return Verification(
             claim=claim,
@@ -79,15 +72,15 @@ class FactVerifier:
             evidence_count=len(evidence_list),
             max_similarity=max_similarity,
             avg_similarity=avg_similarity,
-            best_evidence=evidence_used[best_evidence_idx],
+            best_evidence=evidence_list[best_evidence_idx],
             all_evidence=evidence_list,
             explanation=explanation
         )
 
-    def verify_claims(self, claims_with_evidence: List[Tuple[Claim, List[Evidence]]]) -> List[Verification]: 
+    def verify_claims(self, claims_with_evidence: List[Claim]) -> List[Verification]: 
         results = []
-        for claim, evidence in claims_with_evidence:
-            results.append(self.verify_claim(claim, evidence))
+        for claim in claims_with_evidence:
+            results.append(self.verify_claim(claim, claim.evidence))
         return results
 
     def get_overall_assessment(self, verification_results: List[Dict]) -> Dict:

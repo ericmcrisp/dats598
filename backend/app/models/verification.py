@@ -6,11 +6,11 @@ from app.models.evidence import Evidence
 # this ties into claim extraction
 class Verification(BaseModel):
     claim: Claim
-    verdict: Optional[str] = None
+    verdict: Optional[str] = None  # SUPPORTED / REFUTED / NEI
     confidence: Optional[float] = None
     evidence_count: Optional[int] = None
     max_similarity: Optional[float] = None
     avg_similarity: Optional[float] = None
-    best_evidence: Optional[Dict] = None
+    best_evidence: Optional[Evidence] = None
     all_evidence: Optional[List[Evidence]] = None
     explanation: Optional[str] = None

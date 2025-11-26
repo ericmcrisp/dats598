@@ -10,5 +10,5 @@ class EvidenceSource(BaseModel):
 class Evidence(BaseModel):
     text: str
     source: EvidenceSource
-    relevance_score: float
-    claim_text: str
+    similarity: float
+    rank: int
