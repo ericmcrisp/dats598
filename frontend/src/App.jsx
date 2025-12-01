@@ -8,8 +8,6 @@ function App() {
   const [successMessage, setSuccessMessage] = useState(null);
   const [showConfig, setShowConfig] = useState(false);
   const [showRaw, setShowRaw] = useState(false);
-
-  // FIXED: Added claim_mode and fixed embedding_model field name
   const [config, setConfig] = useState({
     embedding_model_common_name: 'mini_L6',
     claim_confidence_threshold: 0.6,
@@ -17,7 +15,7 @@ function App() {
     evidence_min_similarity: 0.3,
     supports_threshold: 0.5,
     mode: 'rules',
-    claim_mode: 'simple'  // ADDED: Missing field
+    claim_mode: 'simple'
   });
 
   const clearSuccessMessage = () => {
@@ -111,7 +109,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-indigo-200 backdrop-blur-sm flex items-center justify-center py-8">
       <div className="max-w-5xl mx-auto px-6 w-full">
-        {/* Header */}
+        {/* header section */}
         <div className="text-center mb-8">
           <h1 className="text-5xl font-bold text-gray-800 mb-2">FactCheck AI</h1>
           <p className="text-gray-600">Verify claims with AI-powered fact checking</p>
@@ -123,8 +121,6 @@ function App() {
             <p className="text-green-700 font-medium">✅ {successMessage}</p>
           </div>
         )}
-
-        {/* Config Toggle */}
         <div className="text-center mb-6">
           <button 
             onClick={() => setShowConfig(!showConfig)}
@@ -134,13 +130,11 @@ function App() {
           </button>
         </div>
 
-        {/* Config Panel */}
         {showConfig && (
           <div className="mb-6 p-6 bg-white rounded-lg shadow-lg border border-gray-200">
             <h3 className="text-xl font-semibold mb-4 text-gray-800">Configuration</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* FIXED: Changed name to match state */}
               <div>
                 <label className="block font-medium mb-2 text-gray-700">Embedding Model</label>
                 <select
@@ -256,7 +250,6 @@ function App() {
           </div>
         )}
 
-        {/* Input Section */}
         <div className="mb-6 p-6 bg-white rounded-lg shadow-lg border border-gray-200">
           <label className="block font-semibold mb-3 text-gray-800">Enter text to fact-check:</label>
           <textarea
@@ -275,14 +268,13 @@ function App() {
           </button>
         </div>
 
-        {/* Error Display */}
         {error && (
           <div className="p-4 bg-red-50 border-l-4 border-red-500 rounded-lg mb-6 shadow">
             <p className="text-red-700 font-medium">⚠️ {error}</p>
           </div>
         )}
 
-        {/* Results Display */}
+
         {factCheckResult && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -302,8 +294,8 @@ function App() {
                 </pre>
               </div>
             ) : (
-              <>
-                {/* Claims */}
+              <> 
+
                 {factCheckResult.claims && factCheckResult.claims.length > 0 ? (
                   <div className="space-y-4">
                     {factCheckResult.claims.map((verification, idx) => {
@@ -315,7 +307,6 @@ function App() {
                           key={idx} 
                           className="bg-white rounded-lg shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-shadow"
                         >
-                          {/* Claim Header */}
                           <div className="flex items-start gap-4 mb-4">
                             <div className={`text-3xl font-bold px-3 py-1 rounded-lg border-2 ${getVerdictColor(verdict)}`}>
                               {getVerdictIcon(verdict)}
@@ -342,7 +333,6 @@ function App() {
                             </div>
                           </div>
 
-                          {/* Explanation */}
                           {verification.explanation && (
                             <div className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                               <h4 className="font-semibold text-gray-800 mb-2">📝 Explanation</h4>
@@ -350,7 +340,6 @@ function App() {
                             </div>
                           )}
 
-                          {/* Best Evidence */}
                           {verification.best_evidence && (
                             <div className="mb-4 p-4 bg-green-50 rounded-lg border border-green-200">
                               <h4 className="font-semibold text-green-800 mb-2">⭐ Best Evidence</h4>
@@ -377,7 +366,6 @@ function App() {
                             </div>
                           )}
 
-                          {/* All Evidence */}
                           {verification.all_evidence && verification.all_evidence.length > 0 && (
                             <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
                               <h4 className="font-semibold text-blue-800 mb-3">
@@ -419,7 +407,6 @@ function App() {
                             </div>
                           )}
 
-                          {/* Stats */}
                           {(verification.evidence_count || verification.max_similarity || verification.avg_similarity) && (
                             <div className="mt-4 flex flex-wrap gap-4 text-sm text-gray-600">
                               {verification.evidence_count !== undefined && (
@@ -443,7 +430,6 @@ function App() {
                   </div>
                 )}
 
-                {/* Summary */}
                 {factCheckResult.summary && (
                   <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
                     <h3 className="text-xl font-semibold mb-4 text-gray-800">📊 Summary</h3>

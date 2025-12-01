@@ -1,0 +1,2 @@
+title: automated fact checking procedure and pipeline
+summary: 
